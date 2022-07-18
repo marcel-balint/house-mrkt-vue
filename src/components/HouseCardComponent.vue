@@ -1,0 +1,171 @@
+<template>
+  <li>
+    <div class="house-item">
+      <router-link
+        to="/house/view/:houseId"
+        @click="this.getHouseById(house.id)"
+      >
+        <div class="house-box">
+          <div class="house-item-img">
+            <img :src="house.image" alt="house image" />
+          </div>
+
+          <div class="house-item-detail">
+            <p class="house-item-detail-title">{{ house.location.street }}</p>
+            <p class="house-item-detail-price">
+              <img
+                :src="require('../assets/images/ic_price.png')"
+                alt="price"
+              />
+              {{ this.formatNumber(house.price) }}
+            </p>
+            <p class="house-item-detail-address">
+              {{ house.location.zip }} {{ house.location.city }}
+            </p>
+            <p class="house-item-detail-icons">
+              <span class="bed"
+                ><img :src="require('../assets/images/ic_bed.png')" alt="bed" />
+                {{ house.rooms.bedrooms }}</span
+              >
+              <span class="bath">
+                <img
+                  :src="require('../assets/images/ic_bath.png')"
+                  alt="bath"
+                />{{ house.rooms.bathrooms }}</span
+              >
+              <span class="size">
+                <img
+                  :src="require('../assets/images/ic_size.png')"
+                  alt="size"
+                />{{ house.size }}</span
+              >
+            </p>
+          </div>
+        </div>
+      </router-link>
+      <div class="house-item-edit" v-if="house.madeByMe">
+        <span class="item-edit"
+          ><router-link to="/house/edit/:houseId"
+            ><img
+              :src="require('../assets/images/ic_edit.png')"
+              alt="edit" /></router-link
+        ></span>
+        <span class="item-delete"
+          ><img
+            :src="require('../assets/images/ic_delete.png')"
+            alt="delete"
+            @click="this.delete(house.id)"
+        /></span>
+      </div>
+    </div>
+  </li>
+</template>
+<script>
+import { mapActions } from "vuex";
+export default {
+  props: ["house"],
+
+  methods: {
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    },
+    ...mapActions(["getHouseById", "delete"]),
+  },
+};
+</script>
+
+<style scoped>
+.house-item {
+  width: 100%;
+  height: 210px;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 10px;
+}
+.house-box {
+  display: flex;
+}
+ul li {
+  list-style-type: none;
+  margin-top: 20px;
+}
+/***  Removed default blue color ***/
+a {
+  color: inherit;
+  text-decoration: none;
+}
+.house-item-img {
+  position: relative;
+  width: 190px;
+  height: 190px;
+}
+.house-item-img img {
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  top: 55%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  border-radius: 10px;
+}
+.house-item-detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding-top: 14px;
+  padding-left: 15px;
+  padding-bottom: 12px;
+}
+.house-item-detail-title {
+  font-weight: bold;
+}
+.house-item-detail-price {
+  display: flex;
+  font-weight: 500;
+}
+.house-item-detail-price img {
+  width: 20px;
+  margin-right: 5px;
+}
+
+.house-item-detail-address {
+  color: #c3c3c3;
+  font-weight: 100;
+}
+.house-item-detail-icons {
+  display: flex;
+  align-items: center;
+}
+
+.house-item-detail-icons span {
+  display: flex;
+  align-items: center;
+}
+.house-item-detail-icons img {
+  width: 20px;
+  margin-right: 10px;
+}
+.house-item-detail-icons span:not(:first-child) {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.size {
+  display: contents !important;
+}
+
+/********  Edit and Delete icons styles *********/
+.house-item-edit {
+  margin-top: 25px;
+  margin-right: 25px;
+}
+.item-delete {
+  margin-left: 17px;
+}
+.item-edit img,
+.item-delete img {
+  width: 23px;
+  cursor: pointer;
+  z-index: 5;
+}
+</style>

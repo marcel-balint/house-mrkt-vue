@@ -1,0 +1,255 @@
+<template>
+  <div class="container">
+    <div class="conatiner-house-view">
+      <main class="house-detail">
+        <div class="back-icon">
+          <span>
+            <router-link to="/">
+              <img
+                :src="require('../assets/images/ic_back_grey.png')"
+                alt="back" /></router-link
+            >Back to overwiev</span
+          >
+        </div>
+        <div class="house-detail-body">
+          <div class="house-detail-image">
+            <div class="image-box">
+              <img :src="getHouse.image" alt="houseImage" />
+            </div>
+          </div>
+
+          <div class="house-detail-description">
+            <div class="house-title">
+              <h1 class="house-title">{{ getHouse.location.street }}</h1>
+              <div class="house-detail-change">
+                <span class="edit"
+                  ><router-link to="/house/edit/:houseId"
+                    ><img
+                      :src="require('../assets/images/ic_edit.png')"
+                      alt="edit" /></router-link
+                ></span>
+                <span class="delete"
+                  ><img
+                    :src="require('../assets/images/ic_delete.png')"
+                    alt="delete"
+                /></span>
+              </div>
+            </div>
+            <p class="location">
+              <img
+                :src="require('../assets/images/ic_location.png')"
+                alt="location"
+              />
+              {{ getHouse.location.city }}
+            </p>
+            <p class="middle-row">
+              <span class="price"
+                ><img
+                  :src="require('../assets/images/ic_price.png')"
+                  alt="price"
+                />{{ this.formatNumber(getHouse.price) }}</span
+              >
+              <span class="size"
+                ><img
+                  :src="require('../assets/images/ic_size.png')"
+                  alt="size"
+                />{{ getHouse.size }}</span
+              >
+              <span class="year"
+                ><img
+                  :src="require('../assets/images/ic_construction_date.png')"
+                  alt="year"
+                />{{ getHouse.constructionYear }}</span
+              >
+            </p>
+
+            <p class="bottom-row">
+              <span class="bed"
+                ><img
+                  :src="require('../assets/images/ic_bed.png')"
+                  alt="bed"
+                />{{ getHouse.rooms.bedrooms }}</span
+              >
+              <span class="bath"
+                ><img
+                  :src="require('../assets/images/ic_bath.png')"
+                  alt="bath"
+                />{{ getHouse.rooms.bathrooms }}</span
+              >
+              <span class="garage"
+                ><img
+                  :src="require('../assets/images/ic_garage.png')"
+                  alt="garage"
+                />{{ getHouse.hasGarage ? getHouse.hasGarage : "No" }}</span
+              >
+            </p>
+
+            <div class="house-description-text">
+              {{ getHouse.description }}
+            </div>
+          </div>
+        </div>
+      </main>
+      <aside class="aside">
+        <h2 class="recomandations-title">Recomanded for you</h2>
+        <ul>
+          <RecomandedHousesComponent :house="recomandations" />
+        </ul>
+      </aside>
+    </div>
+  </div>
+</template>
+
+<script>
+import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vue";
+
+import { mapGetters } from "vuex";
+
+export default {
+  props: ["houseId"],
+
+  methods: {
+    formatNumber(num) {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    },
+  },
+  computed: {
+    ...mapGetters({
+      getHouse: "getHouse",
+      recomandations: "getRecomandations",
+    }),
+  },
+  created() {
+    this.$store.dispatch("getRecomandation");
+  },
+  components: { RecomandedHousesComponent },
+};
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+/******  Open Sans font *****/
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+.container {
+  background-color: #f6f6f6;
+  height: 100%;
+  padding-bottom: 40px;
+}
+.conatiner-house-view {
+  width: 70%;
+  margin-top: 0px;
+  margin-right: auto;
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+}
+
+.house-detail {
+  margin-top: 50px;
+  flex: 2;
+}
+.back-icon {
+  display: flex;
+}
+.back-icon span {
+  display: flex;
+  flex-direction: row;
+  font-size: 16px;
+  font-weight: 600;
+}
+.back-icon img {
+  width: 20px;
+  margin-right: 10px;
+}
+
+.header-create {
+  padding-top: 30px;
+}
+
+/************ Main page styles ********/
+
+.image-box {
+  max-width: 800px;
+}
+.house-detail-description {
+  background-color: #fff;
+  max-width: 800px;
+  padding: 30px;
+}
+.house-detail-description p {
+  margin-top: 15px;
+}
+.house-detail-body {
+  margin-top: 30px;
+}
+
+.house-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.house-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.house-detail-change {
+  display: flex;
+  gap: 30px;
+}
+
+.price,
+.size,
+.year,
+.bath,
+.bed,
+.garage {
+  display: inline;
+}
+
+.middle-row > *,
+.bottom-row > * {
+  margin-right: 20px;
+}
+.house-description-text {
+  font-family: "Open Sans", sans-serif;
+  padding-top: 30px;
+  padding-bottom: 10px;
+  font-size: 18px;
+  font-weight: 100;
+  letter-spacing: 1px;
+}
+
+/*****************Icon styles************/
+
+.delete img,
+.edit img {
+  width: 23px;
+}
+
+.location img,
+.year img,
+.size img,
+.price img,
+.bath img,
+.bed img,
+.garage img {
+  width: 15px;
+  margin-right: 10px;
+}
+
+.location {
+  display: flex;
+}
+/*************** Aside styles  *********/
+.aside {
+  margin-top: 50px;
+
+  flex: 1;
+}
+.recomandations-title {
+  margin-top: 48px;
+}
+</style>
