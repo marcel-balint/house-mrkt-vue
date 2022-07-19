@@ -56,10 +56,18 @@ export default createStore({
     createNewHouse(headers) {
       axios.post(getDataURL, headers);
     },
-    delete(houseId) {
-      axios
-        .delete(houseId)
+
+    delete({ dispatch }, houseId) {
+      console.log("idddddddddss", houseId);
+      return axios
+        .delete(getDataURL + "/" + houseId, {
+          headers,
+        })
         .then((response) => {
+          // this.$router.push("/");
+          window.location.href = "/";
+          console.log(dispatch, "response", response);
+          // dispatch("getHouses");
           console.log(JSON.stringify(response.data));
           response.status(200).end();
         })
@@ -126,9 +134,6 @@ export default createStore({
       commit("getRecomandation");
     },
     delete({ commit }, houseId) {
-      axios.delete(`https://api.intern.d-tt.nl/api/houses/${houseId}`, {
-        headers,
-      });
       commit("delete", houseId);
     },
     toggleClassHome(context) {

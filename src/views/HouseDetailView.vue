@@ -28,7 +28,7 @@
                       :src="require('../assets/images/ic_edit.png')"
                       alt="edit" /></router-link
                 ></span>
-                <span class="delete"
+                <span class="delete cursor-pointer" @click="showModal = true"
                   ><img
                     :src="require('../assets/images/ic_delete.png')"
                     alt="delete"
@@ -89,6 +89,32 @@
             </div>
           </div>
         </div>
+        <div v-if="showModal == true" class="modal">
+          <span @click="showModal = false" class="close" title="Close Modal"
+            >&times;</span
+          >
+          <div class="container">
+            <h1>Delete Account</h1>
+            <p>Are you sure you want to delete your account?</p>
+
+            <div class="clearfix">
+              <button
+                type="button"
+                class="cancelbtn"
+                @click="showModal = false"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="deletebtn"
+                @click="deleteHouse(getHouse.id)"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
       <aside class="aside">
         <h2 class="recomandations-title">Recomanded for you</h2>
@@ -106,11 +132,20 @@ import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vu
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      showModal: false,
+    };
+  },
   props: ["houseId"],
 
   methods: {
     formatNumber(num) {
       return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    },
+    deleteHouse(id) {
+      console.log("house id", id);
+      this.$store.commit("delete", id);
     },
   },
   computed: {
