@@ -62,7 +62,7 @@ import { mapActions } from "vuex";
 export default {
   props: ["house"],
   methods: {
-    ...mapActions(["setHouse", "delete"]),
+    ...mapActions(["setHouse", "getHouseById", "delete"]),
   },
 };
 </script>

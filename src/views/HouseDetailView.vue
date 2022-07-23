@@ -131,7 +131,7 @@
 <script>
 import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vue";
 
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -148,6 +148,7 @@ export default {
     deleteHouse(id) {
       this.$store.commit("delete", id);
     },
+     ...mapActions(["getHouseById"]),
   },
   computed: {
     ...mapGetters({

@@ -77,7 +77,11 @@ export default createStore({
 		},
 		//Set a house displayed on <HouseDetailView/>
 		setHouse(state, house) {
-			let newHouse = state.houses.find(el => el.id === house);
+			console.log({ house });
+			let newHouse = state.houses.find(
+				el => Number(el.id) === Number(house)
+			);
+			console.log({ newHouse });
 			//clear the current house
 			if (state.house) {
 				state.house = null;
@@ -122,6 +126,18 @@ export default createStore({
 			return axios({
 				method: 'POST',
 				url: getDataURL,
+				headers: {
+					'X-Api-Key': 'GJXtOHyT8QP352l6BZgxY41dmMojFW_N',
+				},
+				data,
+			});
+		},
+
+		updateHouse({ commit }, data) {
+			console.log(commit, 'response', data);
+			return axios({
+				method: 'POST',
+				url: getDataURL + '/' + data.id,
 				headers: {
 					'X-Api-Key': 'GJXtOHyT8QP352l6BZgxY41dmMojFW_N',
 				},

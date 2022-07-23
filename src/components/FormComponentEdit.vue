@@ -1,10 +1,14 @@
 <template>
-  <form class="form-create" enctype="multipart/form-data">
+  <form
+    @submit.prevent="submitHouse"
+    class="form-create"
+    enctype="multipart/form-data"
+  >
     <div class="street-name">
       <label for="street">Street name*</label><br />
       <input
         type="text"
-        v-model="house.location.street_name"
+        v-model="editHouse.streetName"
         placeholder="Enter the street name"
       />
     </div>
@@ -13,40 +17,35 @@
         <label for="house-number">House number*</label><br />
         <input
           type="text"
-          v-model="house.location.house_number"
+          v-model="editHouse.houseNumber"
           placeholder="Enter house number"
         />
       </div>
       <div class="addition-label">
         <label for="add">Addition (optional)</label><br />
-        <input type="text" v-model="house.location.numberAddition" placeholder="Eg. A" />
+        <input
+          type="text"
+          v-model="editHouse.numberAddition"
+          placeholder="Eg. A"
+        />
       </div>
     </div>
     <br />
     <div class="post-code">
       <label for="post-code">Post code*</label><br />
-      <input
-        type="text"
-        v-model="house.location.zip"
-        placeholder="Eg. 1000 AA"
-      />
+      <input type="text" v-model="editHouse.zip" placeholder="Eg. 1000 AA" />
     </div>
     <br />
     <div class="city">
       <label for="city">City*</label><br />
-      <input
-        type="text"
-        v-model="house.location.city"
-        v
-        placeholder="Eg. Utrecht"
-      />
+      <input type="text" v-model="editHouse.city" v placeholder="Eg. Utrecht" />
     </div>
     <div class="upload-image-box">
       <p>Upload picture (PNG or JPG)*</p>
 
       <span
         class="clear-img"
-        :class="imageURL ? 'clear-img-active' : 'clear-img'"
+        :class="imageURL || editHouse.image ? 'clear-img-active' : 'clear-img'"
       >
         <img
           @click="clearImage"
@@ -55,23 +54,26 @@
       <label
         for="uploadImage"
         class="label-upload"
-        :class="imageURL ? 'label-upload-active' : 'label-upload'"
+        :class="
+          imageURL || editHouse.image ? 'label-upload-active' : 'label-upload'
+        "
       >
         <span
           class="upload-image-square"
           :class="
-            imageURL ? 'upload-image-square-active' : 'upload-image-square'
+            imageURL || editHouse.image
+              ? 'upload-image-square-active'
+              : 'upload-image-square'
           "
         >
           <img
             class="uploaded-image"
-            v-if="imageURL"
-            :src="house.image"
-            :alt="newHouse.altImage"
+            v-if="editHouse.image || imageURL"
+            :src="imageURL ? imageURL : editHouse.image"
           />
           <img
             class="plus-icon"
-            v-if="!imageURL"
+            v-if="!imageURL && !editHouse.image"
             :src="require('../assets/images/ic_upload.png')"
           />
           <input
@@ -87,12 +89,12 @@
 
     <div class="price">
       <label for="price">Price*</label><br />
-      <input type="text" v-model="house.price" placeholder="eg. €150.000" />
+      <input type="text" v-model="editHouse.price" placeholder="eg. €150.000" />
     </div>
     <div class="size-garage-row">
       <div class="size">
         <label for="size">Size*</label><br />
-        <input type="text" v-model="house.size" placeholder="eg. 60m2" />
+        <input type="text" v-model="editHouse.size" placeholder="eg. 60m2" />
       </div>
       <div class="garage">
         <span>Garage*</span>
@@ -100,7 +102,7 @@
           <label>
             <select
               name="garage"
-              v-model="house.hasGarage"
+              v-model="editHouse.hasGarage"
               class="garage-select"
             >
               <option value="" selected disabled hidden>Select</option>
@@ -116,7 +118,7 @@
         <label for="bedrooms">Bedrooms*</label><br />
         <input
           type="text"
-          v-model="house.rooms.bedrooms"
+          v-model="editHouse.bedrooms"
           placeholder="Enter amount"
         />
       </div>
@@ -124,7 +126,7 @@
         <label for="bathrooms">Bathrooms*</label><br />
         <input
           type="text"
-          v-model="house.rooms.bathrooms"
+          v-model="editHouse.bathrooms"
           placeholder="Enter amount"
         />
       </div>
@@ -133,7 +135,7 @@
       <label for="construction">Construction date*</label><br />
       <input
         type="text"
-        v-model="house.constructionYear"
+        v-model="editHouse.constructionYear"
         placeholder="eg. 1990"
       />
     </div>
@@ -142,12 +144,12 @@
       <textarea
         rows="4"
         cols="44"
-        v-model="house.description"
+        v-model="editHouse.description"
         placeholder="Enter description"
       ></textarea>
     </div>
     <div class="post">
-      <button>Post</button>
+      <button class="button">Post</button>
     </div>
   </form>
   <pre>{{ this.house.location.street }}</pre>
@@ -155,19 +157,99 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
       houseId: this.$route.params.houseId,
+      imageURL: "",
+      editHouse: {
+        streetName: "",
+        houseNumber: "",
+        numberAddition: "",
+        zip: "",
+        city: "",
+        image: null,
+        price: "",
+        size: "",
+        hasGarage: "",
+        bedrooms: "",
+        bathrooms: "",
+        constructionYear: "",
+        description: "",
+      },
     };
   },
   methods: {
+    dispalyCreatedHouse(id) {
+      this.$store.commit("setHouse", id);
+    },
+    submitHouse: function () {
+      console.log(this.editHouse);
+      document.querySelector(".button").classList.add("button--loading");
+      this.editHouse["numberAddition"] =
+        this.editHouse["numberAddition"] != ""
+          ? `-${this.editHouse["numberAddition"]}`
+          : this.editHouse["numberAddition"];
+      this.editHouse["id"] = this.houseId;
+      this.$store
+        .dispatch("updateHouse", this.editHouse)
+        .then((response) => {
+          console.log("data sent", response.data);
+          //Sending the image
+          this.onUpload();
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    },
+    async onUpload() {
+      let myHeaders = new Headers();
+      myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
+      var formdata = new FormData();
+      formdata.append("image", this.selectedFile);
+      console.log('Same as "response" selectedFile', this.selectedFile);
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+
+      await fetch(
+        "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
+        requestOptions
+      )
+        .then((response) => {
+          console.log("response", response);
+        })
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+      await this.$store.dispatch("getHouses");
+      setTimeout(() => {
+        this.dispalyCreatedHouse(this.houseId);
+        this.$router.push(`/house/view/${this.houseId}`);
+        document.querySelector(".button").classList.remove("button--loading");
+      }, 500);
+    },
+
     placeNumber(str) {
       var regex = /\d+/g;
 
       var matches = str.match(regex); // creates array from matches
       return matches;
+    },
+    onfile(event) {
+      this.selectedFile = event.target.files[0];
+      if (!this.selectedFile) return;
+      this.imageURL = URL.createObjectURL(this.selectedFile);
+    },
+    ...mapActions(["getHouseById"]),
+    clearImage: function () {
+      this.imageURL = null;
+      this.editHouse.image = "";
+      //clear the previous value
+      document.getElementById("uploadImage").value = "";
     },
   },
   computed: {
@@ -175,6 +257,21 @@ export default {
   },
   created() {
     this.$store.dispatch("getHouseById", this.houseId);
+    this.editHouse = {
+      streetName: this.house.location.street_name,
+      houseNumber: this.house.location.house_number,
+      numberAddition: this.house.location.numberAddition,
+      zip: this.house.location.zip,
+      city: this.house.location.city,
+      image: this.house.image,
+      price: this.house.price,
+      size: this.house.size,
+      hasGarage: this.house.hasGarage,
+      bedrooms: this.house.rooms.bedrooms,
+      bathrooms: this.house.rooms.bathrooms,
+      constructionYear: this.house.constructionYear,
+      description: this.house.description,
+    };
   },
 };
 </script>
