@@ -24,8 +24,17 @@
 import { mapGetters } from "vuex";
 import FormComponentEdit from "../components/FormComponentEdit.vue";
 export default {
+  data() {
+    return {
+      houseId: this.$route.params.houseId,
+    };
+  },
   computed: { ...mapGetters({ house: "getHouse" }) },
   components: { FormComponentEdit },
+  created() {
+    console.log(this.houseId);
+    this.$store.dispatch("getHouseById", this.houseId);
+  },
 };
 </script>
 

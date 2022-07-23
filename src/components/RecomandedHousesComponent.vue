@@ -8,7 +8,9 @@
           </div>
 
           <div class="house-item-detail">
-            <p class="house-item-detail-title">{{ item.location.street }}</p>
+            <p class="house-item-detail-title">
+              {{ item.location.street.replace("-", "") }}
+            </p>
             <p class="house-item-detail-price">
               <img
                 :src="require('../assets/images/ic_price.png')"
@@ -41,7 +43,8 @@
           <span class="item-edit"
             ><router-link :to="`/house/edit/${item.id}`"
               ><img
-                :src="require('../assets/images/ic_edit.png')" /></router-link
+                :src="require('../assets/images/ic_edit.png')"
+                @click="this.getHouseById(item.id)" /></router-link
           ></span>
           <span class="item-delete"
             ><img

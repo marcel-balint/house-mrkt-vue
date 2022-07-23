@@ -4,7 +4,7 @@
       <label for="street">Street name*</label><br />
       <input
         type="text"
-        v-model="house.location.street"
+        v-model="house.location.street_name"
         placeholder="Enter the street name"
       />
     </div>
@@ -13,13 +13,13 @@
         <label for="house-number">House number*</label><br />
         <input
           type="text"
-          v-model="house.location.zip"
+          v-model="house.location.house_number"
           placeholder="Enter house number"
         />
       </div>
       <div class="addition-label">
         <label for="add">Addition (optional)</label><br />
-        <input type="text" v-model="house.numberAddition" placeholder="Eg. A" />
+        <input type="text" v-model="house.location.numberAddition" placeholder="Eg. A" />
       </div>
     </div>
     <br />
@@ -151,7 +151,7 @@
     </div>
   </form>
   <pre>{{ this.house.location.street }}</pre>
-  <pre>house id{{ houseId }} {{ this.house }}</pre>
+  <pre>house id12{{ houseId }} {{ this.house }}</pre>
 </template>
 
 <script>

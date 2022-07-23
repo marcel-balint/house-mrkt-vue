@@ -180,6 +180,10 @@ export default {
   methods: {
     submitHouse: function () {
       document.querySelector(".button").classList.add("button--loading");
+      this.newHouse["numberAddition"] =
+        this.newHouse["numberAddition"] != ""
+          ? `-${this.newHouse["numberAddition"]}`
+          : this.newHouse["numberAddition"];
       this.$store
         .dispatch("newHouse", this.newHouse)
         .then((response) => {
