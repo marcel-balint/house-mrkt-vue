@@ -3,13 +3,14 @@
     <div class="container-create-body">
       <div class="back-icon">
         <span>
-          <router-link to="/">
+          <router-link :to="`/house/view/${house.id}`">
             <img
               :src="
                 require('../assets/images/ic_back_grey.png')
               " /></router-link
           >Back to detail page</span
         >
+        house IDDDD {{ house.id }}
       </div>
       <div class="header-create">
         <h1>Edit listing</h1>
@@ -20,8 +21,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import FormComponentEdit from "../components/FormComponentEdit.vue";
-export default { components: { FormComponentEdit } };
+export default {
+  computed: { ...mapGetters({ house: "getHouse" }) },
+  components: { FormComponentEdit },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

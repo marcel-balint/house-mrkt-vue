@@ -75,8 +75,8 @@ export default createStore({
         })
         .catch((error) => console.log("error", error));
     },
-
-    displayRecomanded(state, house) {
+    //Set a house displayed on <HouseDetailView/>
+    setHouse(state, house) {
       let newHouse = state.houses.find((el) => el.id === house);
       //clear the current house
       if (state.house) {
@@ -138,8 +138,8 @@ export default createStore({
       });
     },
 
-    displayRecomandedHouse({ commit }, houseId) {
-      commit("displayRecomanded", houseId);
+    setHouse({ commit }, houseId) {
+      commit("setHouse", houseId);
     },
 
     getRecomandation({ commit }) {

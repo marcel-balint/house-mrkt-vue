@@ -146,7 +146,9 @@
       ></textarea>
     </div>
     <div class="post">
-      <button>Post</button>
+      <button class="button">
+        <span class="button__text">Post</span>
+      </button>
     </div>
   </form>
 </template>
@@ -177,6 +179,7 @@ export default {
   },
   methods: {
     submitHouse: function () {
+      document.querySelector(".button").classList.add("button--loading");
       this.$store
         .dispatch("newHouse", this.newHouse)
         .then((response) => {
@@ -194,11 +197,10 @@ export default {
     },
     onfile(event) {
       this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile);
       if (!this.selectedFile) return;
       this.imageURL = URL.createObjectURL(this.selectedFile);
     },
-    onUpload() {
+    async onUpload() {
       let myHeaders = new Headers();
       myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
       var formdata = new FormData();
@@ -211,16 +213,24 @@ export default {
         redirect: "follow",
       };
 
-      fetch(
+      await fetch(
         "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
         requestOptions
       )
         .then((response) => {
           console.log("response", response);
-          this.$router.push("/");
         })
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
+      this.$store.dispatch("getHouses");
+      setTimeout(() => {
+        this.dispalyCreatedHouse(this.houseId);
+        this.$router.push(`/house/view/${this.houseId}`);
+        document.querySelector(".button").classList.remove("button--loading");
+      }, 500);
+    },
+    dispalyCreatedHouse(id) {
+      this.$store.commit("setHouse", id);
     },
     clearImage: function () {
       this.imageURL = null;
@@ -234,6 +244,55 @@ export default {
 </script>
 
 <style>
+/****************************************************************************************************** */
+
+.button {
+  position: relative;
+  padding: 8px 16px;
+  background: #009579;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.button__text {
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading .button__text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/***************************************************************************************** */
 * {
   font-family: "Montserrat";
 }

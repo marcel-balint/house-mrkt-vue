@@ -1,9 +1,6 @@
 <template>
   <li v-for="item in house" :key="item.id">
-    <router-link
-      :to="`/house/view/${item.id}`"
-      @click="this.displayRecomandedHouse(item.id)"
-    >
+    <router-link :to="`/house/view/${item.id}`" @click="this.setHouse(item.id)">
       <div class="house-item">
         <div class="house-box">
           <div class="house-item-img">
@@ -40,14 +37,17 @@
             </p>
           </div>
         </div>
-        <div class="house-item-edit">
+        <div class="house-item-edit" v-if="item.madeByMe">
           <span class="item-edit"
-            ><router-link to="/house/edit/:houseId"
+            ><router-link :to="`/house/edit/${item.id}`"
               ><img
                 :src="require('../assets/images/ic_edit.png')" /></router-link
           ></span>
           <span class="item-delete"
-            ><img :src="require('../assets/images/ic_delete.png')"
+            ><img
+              :src="require('../assets/images/ic_delete.png')"
+              alt="delete"
+              @click="this.delete(item.id)"
           /></span>
         </div>
       </div>
@@ -59,7 +59,7 @@ import { mapActions } from "vuex";
 export default {
   props: ["house"],
   methods: {
-    ...mapActions(["displayRecomandedHouse"]),
+    ...mapActions(["setHouse", "delete"]),
   },
 };
 </script>
@@ -153,7 +153,6 @@ a {
 .house-item-edit {
   margin-top: 25px;
   margin-right: 25px;
-  display: none;
 }
 .item-delete {
   margin-left: 17px;

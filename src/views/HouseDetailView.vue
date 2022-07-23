@@ -95,8 +95,8 @@
             >&times;</span
           >
           <div class="container">
-            <h1>Delete Account</h1>
-            <p>Are you sure you want to delete your account?</p>
+            <h1>Delete Listing</h1>
+            <p>Are you sure you want to delete your listing?</p>
 
             <div class="clearfix">
               <button
@@ -145,7 +145,6 @@ export default {
       return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
     },
     deleteHouse(id) {
-      console.log("house id", id);
       this.$store.commit("delete", id);
     },
   },
