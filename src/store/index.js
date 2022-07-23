@@ -152,7 +152,7 @@ export default createStore({
 					let splittedStreet = house.location.street.split(' ');
 					let houseInfo = splittedStreet.pop();
 					let street_name = splittedStreet.join(' ');
-					let splittedHouseInfo = houseInfo.split('-');
+					let splittedHouseInfo = houseInfo.split(/-(.*)/s);
 
 					let [house_number, numberAddition] = ['', ''];
 					if (splittedHouseInfo.length > 1) {
