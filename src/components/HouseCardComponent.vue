@@ -45,9 +45,10 @@
       </router-link>
       <div class="house-item-edit" v-if="house.madeByMe">
         <span class="item-edit"
-          ><router-link to="/house/edit/:houseId"
+          ><router-link :to="`/house/edit/${house.id}`"
             ><img
               :src="require('../assets/images/ic_edit.png')"
+              @click="this.getHouseById(house.id)"
               alt="edit" /></router-link
         ></span>
         <span class="item-delete"
@@ -76,6 +77,7 @@ export default {
 
 <style scoped>
 .house-item {
+  position: relative;
   width: 100%;
   height: 210px;
   background-color: #fff;
@@ -83,6 +85,11 @@ export default {
   justify-content: space-between;
   border-radius: 10px;
 }
+
+.house-item a {
+  flex-grow: 1;
+}
+
 .house-box {
   display: flex;
 }
@@ -156,8 +163,11 @@ a {
 
 /********  Edit and Delete icons styles *********/
 .house-item-edit {
+  position: absolute;
+  right: 0;
   margin-top: 25px;
   margin-right: 25px;
+  height: 30px;
 }
 .item-delete {
   margin-left: 17px;

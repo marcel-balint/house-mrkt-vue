@@ -19,8 +19,7 @@ fetch("https://api.intern.d-tt.nl/api/houses", requestOptions)
   .then((response) => response.json())
   .then((result) => console.log(result))
   .catch((error) => console.log("error", error));
-
-*/
+  */
 </script>
 
 <style></style>

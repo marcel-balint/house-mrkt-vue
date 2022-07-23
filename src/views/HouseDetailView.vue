@@ -21,9 +21,10 @@
           <div class="house-detail-description">
             <div class="house-title">
               <h1 class="house-title">{{ getHouse.location.street }}</h1>
-              <div class="house-detail-change">
+
+              <div class="house-detail-change" v-if="getHouse.madeByMe">
                 <span class="edit"
-                  ><router-link to="/house/edit/:houseId"
+                  ><router-link :to="`/house/edit/${getHouse.id}`"
                     ><img
                       :src="require('../assets/images/ic_edit.png')"
                       alt="edit" /></router-link

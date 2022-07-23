@@ -14,14 +14,14 @@
       <div class="header-create">
         <h1>Edit listing</h1>
       </div>
-      <FormComponent />
+      <FormComponentEdit />
     </div>
   </div>
 </template>
 
 <script>
-import FormComponent from "@/components/FormComponent.vue";
-export default { components: { FormComponent } };
+import FormComponentEdit from "../components/FormComponentEdit.vue";
+export default { components: { FormComponentEdit } };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

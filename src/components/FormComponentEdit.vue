@@ -1,14 +1,10 @@
 <template>
-  <form
-    @submit.prevent="submitHouse"
-    class="form-create"
-    enctype="multipart/form-data"
-  >
+  <form class="form-create" enctype="multipart/form-data">
     <div class="street-name">
       <label for="street">Street name*</label><br />
       <input
         type="text"
-        v-model="newHouse.streetName"
+        v-model="house.location.street"
         placeholder="Enter the street name"
       />
     </div>
@@ -17,28 +13,33 @@
         <label for="house-number">House number*</label><br />
         <input
           type="text"
-          v-model="newHouse.houseNumber"
+          v-model="house.location.zip"
           placeholder="Enter house number"
         />
       </div>
       <div class="addition-label">
         <label for="add">Addition (optional)</label><br />
-        <input
-          type="text"
-          v-model="newHouse.numberAddition"
-          placeholder="Eg. A"
-        />
+        <input type="text" v-model="house.numberAddition" placeholder="Eg. A" />
       </div>
     </div>
     <br />
     <div class="post-code">
       <label for="post-code">Post code*</label><br />
-      <input type="text" v-model="newHouse.zip" placeholder="Eg. 1000 AA" />
+      <input
+        type="text"
+        v-model="house.location.zip"
+        placeholder="Eg. 1000 AA"
+      />
     </div>
     <br />
     <div class="city">
       <label for="city">City*</label><br />
-      <input type="text" v-model="newHouse.city" placeholder="Eg. Utrecht" />
+      <input
+        type="text"
+        v-model="house.location.city"
+        v
+        placeholder="Eg. Utrecht"
+      />
     </div>
     <div class="upload-image-box">
       <p>Upload picture (PNG or JPG)*</p>
@@ -65,7 +66,7 @@
           <img
             class="uploaded-image"
             v-if="imageURL"
-            :src="imageURL"
+            :src="house.image"
             :alt="newHouse.altImage"
           />
           <img
@@ -86,12 +87,12 @@
 
     <div class="price">
       <label for="price">Price*</label><br />
-      <input type="text" v-model="newHouse.price" placeholder="eg. €150.000" />
+      <input type="text" v-model="house.price" placeholder="eg. €150.000" />
     </div>
     <div class="size-garage-row">
       <div class="size">
         <label for="size">Size*</label><br />
-        <input type="text" v-model="newHouse.size" placeholder="eg. 60m2" />
+        <input type="text" v-model="house.size" placeholder="eg. 60m2" />
       </div>
       <div class="garage">
         <span>Garage*</span>
@@ -99,7 +100,7 @@
           <label>
             <select
               name="garage"
-              v-model="newHouse.hasGarage"
+              v-model="house.hasGarage"
               class="garage-select"
             >
               <option value="" selected disabled hidden>Select</option>
@@ -115,7 +116,7 @@
         <label for="bedrooms">Bedrooms*</label><br />
         <input
           type="text"
-          v-model="newHouse.bedrooms"
+          v-model="house.rooms.bedrooms"
           placeholder="Enter amount"
         />
       </div>
@@ -123,7 +124,7 @@
         <label for="bathrooms">Bathrooms*</label><br />
         <input
           type="text"
-          v-model="newHouse.bathrooms"
+          v-model="house.rooms.bathrooms"
           placeholder="Enter amount"
         />
       </div>
@@ -132,16 +133,16 @@
       <label for="construction">Construction date*</label><br />
       <input
         type="text"
-        v-model="newHouse.constructionYear"
+        v-model="house.constructionYear"
         placeholder="eg. 1990"
       />
     </div>
     <div class="description">
       <p><label for="description">Description*</label></p>
       <textarea
-        v-model="newHouse.description"
         rows="4"
         cols="44"
+        v-model="house.description"
         placeholder="Enter description"
       ></textarea>
     </div>
@@ -149,86 +150,31 @@
       <button>Post</button>
     </div>
   </form>
+  <pre>{{ this.house.location.street }}</pre>
+  <pre>house id{{ houseId }} {{ this.house }}</pre>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      newHouse: {
-        streetName: "",
-        houseNumber: "",
-        numberAddition: "",
-        zip: "",
-        city: "",
-        image: null,
-        price: "",
-        size: "",
-        hasGarage: "",
-        bedrooms: "",
-        bathrooms: "",
-        constructionYear: "",
-        description: "",
-      },
-      imageURL: "",
-      houseId: "",
-      selectedFile: null,
+      houseId: this.$route.params.houseId,
     };
   },
   methods: {
-    submitHouse: function () {
-      this.$store
-        .dispatch("newHouse", this.newHouse)
-        .then((response) => {
-          console.log("data sent", response.data);
-          if (response.data) {
-            this.houseId = response.data.id;
-            console.log("House ID", this.houseId);
-            //Sending the image
-            this.onUpload();
-          }
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    },
-    onfile(event) {
-      this.selectedFile = event.target.files[0];
-      console.log(this.selectedFile);
-      if (!this.selectedFile) return;
-      this.imageURL = URL.createObjectURL(this.selectedFile);
-    },
-    onUpload() {
-      let myHeaders = new Headers();
-      myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
-      var formdata = new FormData();
-      formdata.append("image", this.selectedFile);
-      console.log('Same as "response" selectedFile', this.selectedFile);
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
+    placeNumber(str) {
+      var regex = /\d+/g;
 
-      fetch(
-        "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
-        requestOptions
-      )
-        .then((response) => {
-          console.log("response", response);
-          this.$router.push("/");
-        })
-        .then((result) => console.log(result))
-        .catch((error) => console.log("error", error));
+      var matches = str.match(regex); // creates array from matches
+      return matches;
     },
-    clearImage: function () {
-      this.imageURL = null;
-      this.imagePresent = false;
-
-      //clear the previous value
-      document.getElementById("uploadImage").value = "";
-    },
+  },
+  computed: {
+    ...mapGetters({ house: "getHouse" }),
+  },
+  created() {
+    this.$store.dispatch("getHouseById", this.houseId);
   },
 };
 </script>

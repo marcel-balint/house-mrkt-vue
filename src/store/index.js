@@ -4,8 +4,15 @@ import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
 
 const getDataURL = "https://api.intern.d-tt.nl/api/houses";
-const headers = {
-  "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+const myHeaders = new Headers();
+myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
+
+const requestOptions = {
+  headers: myHeaders,
+};
+const deleteRequestOptions = {
+  method: "DELETE",
+  headers: myHeaders,
 };
 
 export default createStore({
@@ -57,24 +64,18 @@ export default createStore({
       axios.post(getDataURL, headers);
     },
 
-    delete({ dispatch }, houseId) {
-      console.log("idddddddddss", houseId);
-      return axios
-        .delete(getDataURL + "/" + houseId, {
-          headers,
-        })
-        .then((response) => {
-          // this.$router.push("/");
+    async delete({ dispatch }, houseId) {
+      console.log("THE ID", houseId);
+      return await fetch(getDataURL + "/" + houseId, deleteRequestOptions)
+        .then((response) => response.text())
+        .then((result) => {
           window.location.href = "/";
-          console.log(dispatch, "response", response);
-          // dispatch("getHouses");
-          console.log(JSON.stringify(response.data));
-          response.status(200).end();
+          console.log(dispatch, "response", result);
+          console.log(result);
         })
-        .catch((error) => {
-          console.log(error);
-        });
+        .catch((error) => console.log("error", error));
     },
+
     displayRecomanded(state, house) {
       let newHouse = state.houses.find((el) => el.id === house);
       //clear the current house
@@ -97,26 +98,37 @@ export default createStore({
     },
     getRecomandation(state) {
       //Exclude the current displayed house
-      let filteredHouse = state.houses.filter((el) => el !== state.house);
+      let filteredHouses = state.houses.filter((el) => el !== state.house);
 
       //Get 3 random items
-      filteredHouse.sort(() => {
-        Math.random() - Math.random();
-      });
-      state.recomandations = filteredHouse.slice(0, 3);
+      let shuffled = [...filteredHouses].sort(() => 0.5 - Math.random());
+      state.recomandations = shuffled.slice(0, 3);
     },
   },
 
   actions: {
     async getHouses({ commit }) {
-      await axios
-        .get(getDataURL, { headers })
-        .then((response) => {
-          commit("setHouses", response.data);
-          console.log(response.data);
+      fetch(getDataURL, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          commit("setHouses", result);
+          console.log(result);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log("error", error));
     },
+
+    newHouse({ commit }, data) {
+      console.log(commit, "response", data);
+      return axios({
+        method: "POST",
+        url: getDataURL,
+        headers: {
+          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+        },
+        data,
+      });
+    },
+
     //Select a specific house based on id
     getHouseById({ commit, state }, houseId) {
       state.houses.find((house) => {
