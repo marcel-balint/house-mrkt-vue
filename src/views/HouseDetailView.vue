@@ -20,7 +20,9 @@
 
           <div class="house-detail-description">
             <div class="house-title">
-              <h1 class="house-title">{{ getHouse.location.street.replace("-", "") }}</h1>
+              <h1 class="house-title">
+                {{ getHouse.location.street.replace("-", "") }}
+              </h1>
 
               <div class="house-detail-change" v-if="getHouse.madeByMe">
                 <span class="edit"
@@ -148,7 +150,7 @@ export default {
     deleteHouse(id) {
       this.$store.commit("delete", id);
     },
-     ...mapActions(["getHouseById"]),
+    ...mapActions(["getHouseById"]),
   },
   computed: {
     ...mapGetters({
