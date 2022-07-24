@@ -37,19 +37,6 @@
             </p>
           </div>
         </div>
-        <div class="house-item-edit" v-if="item.madeByMe">
-          <span class="item-edit"
-            ><router-link :to="`/house/edit/${item.id}`"
-              ><img
-                :src="require('../assets/images/ic_edit.png')" /></router-link
-          ></span>
-          <span class="item-delete"
-            ><img
-              :src="require('../assets/images/ic_delete.png')"
-              alt="delete"
-              @click="this.delete(item.id)"
-          /></span>
-        </div>
       </div>
     </router-link>
   </li>
@@ -59,7 +46,7 @@ import { mapActions } from "vuex";
 export default {
   props: ["house"],
   methods: {
-    ...mapActions(["setHouse", "delete"]),
+    ...mapActions(["setHouse"]),
   },
 };
 </script>
@@ -147,19 +134,5 @@ a {
 }
 .size {
   display: contents !important;
-}
-
-/********  Edit and Delete icons styles *********/
-.house-item-edit {
-  margin-top: 25px;
-  margin-right: 25px;
-}
-.item-delete {
-  margin-left: 17px;
-}
-.item-edit img,
-.item-delete img {
-  width: 23px;
-  cursor: pointer;
 }
 </style>
