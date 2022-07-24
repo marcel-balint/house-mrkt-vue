@@ -20,13 +20,16 @@
 
           <div class="house-detail-description">
             <div class="house-title">
-              <h1 class="house-title">{{ getHouse.location.street }}</h1>
+              <h1 class="house-title">
+                {{ getHouse.location.street.replace("-", "") }}
+              </h1>
 
               <div class="house-detail-change" v-if="getHouse.madeByMe">
                 <span class="edit"
                   ><router-link :to="`/house/edit/${getHouse.id}`"
                     ><img
                       :src="require('../assets/images/ic_edit.png')"
+                      @click="this.getHouseById(getHouse.id)"
                       alt="edit" /></router-link
                 ></span>
                 <span class="delete cursor-pointer" @click="this.toggleModal"
@@ -134,7 +137,7 @@
 <script>
 import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vue";
 
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
@@ -154,6 +157,7 @@ export default {
     toggleModal() {
       this.showModal = !this.showModal;
     },
+    ...mapActions(["getHouseById"]),
   },
   computed: {
     ...mapGetters({

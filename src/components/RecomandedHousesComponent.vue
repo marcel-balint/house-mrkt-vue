@@ -8,7 +8,9 @@
           </div>
 
           <div class="house-item-detail">
-            <p class="house-item-detail-title">{{ item.location.street }}</p>
+            <p class="house-item-detail-title">
+              {{ item.location.street.replace("-", "") }}
+            </p>
             <p class="house-item-detail-price">
               <img
                 :src="require('../assets/images/ic_price.png')"

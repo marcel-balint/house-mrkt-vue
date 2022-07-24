@@ -10,7 +10,6 @@
               " /></router-link
           >Back to detail page</span
         >
-        house IDDDD {{ house.id }}
       </div>
       <div class="header-create">
         <h1>Edit listing</h1>
@@ -24,7 +23,15 @@
 import { mapGetters } from "vuex";
 import FormComponentEdit from "../components/FormComponentEdit.vue";
 export default {
+  data() {
+    return {
+      houseId: this.$route.params.houseId,
+    };
+  },
   computed: { ...mapGetters({ house: "getHouse" }) },
+  created() {
+    this.$store.dispatch("getHouseById", this.houseId);
+  },
   components: { FormComponentEdit },
 };
 </script>

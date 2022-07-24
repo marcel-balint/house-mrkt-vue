@@ -63,6 +63,23 @@ export default createStore({
     createNewHouse(headers) {
       axios.post(getDataURL, headers);
     },
+    formatSizeProperty(state) {
+      state.houses.forEach((el) => {
+        //Add 'm2' at the end of an integer
+        let houseSizeIntToString = el.size.toString().split("");
+        houseSizeIntToString.push("m2");
+        //remove last char
+        let firstChar = houseSizeIntToString
+          .slice(0, -1)
+          .toString()
+          .replace(/,/g, "");
+
+        //take last char
+        let lastChar = houseSizeIntToString.slice(-1).toString();
+        let finalProp = firstChar + " " + lastChar;
+        el.size = finalProp;
+      });
+    },
 
     async delete({ dispatch }, houseId) {
       console.log("THE ID", houseId);
@@ -77,7 +94,9 @@ export default createStore({
     },
     //Set a house displayed on <HouseDetailView/>
     setHouse(state, house) {
-      let newHouse = state.houses.find((el) => el.id === house);
+      console.log({ house });
+      let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
+      console.log({ newHouse });
       //clear the current house
       if (state.house) {
         state.house = null;
@@ -108,11 +127,12 @@ export default createStore({
 
   actions: {
     async getHouses({ commit }) {
-      fetch(getDataURL, requestOptions)
+      await fetch(getDataURL, requestOptions)
         .then((response) => response.json())
         .then((result) => {
           commit("setHouses", result);
-          console.log(result);
+          //   commit("formatSizeProperty");
+          console.log("getHouses", result);
         })
         .catch((error) => console.log("error", error));
     },
@@ -129,10 +149,43 @@ export default createStore({
       });
     },
 
+    updateHouse({ commit }, data) {
+      console.log(commit, "response update", data);
+      return axios({
+        method: "POST",
+        url: getDataURL + "/" + data.id,
+        headers: {
+          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+        },
+        data,
+      });
+    },
+
     //Select a specific house based on id
     getHouseById({ commit, state }, houseId) {
       state.houses.find((house) => {
         if (house.id === houseId) {
+          //Split the 'street' string and assings new values for street_name,
+          //house_number and numberAddition
+          let splittedStreet = house.location.street.split(" ");
+          let houseInfo = splittedStreet.pop();
+          let street_name = splittedStreet.join(" ");
+          let splittedHouseInfo = houseInfo.split(/-(.*)/s);
+
+          let [house_number, numberAddition] = ["", ""];
+          if (splittedHouseInfo.length > 1) {
+            [house_number, numberAddition] = splittedHouseInfo;
+          } else {
+            house_number = splittedHouseInfo[0];
+          }
+
+          street_name = street_name.trim();
+          house_number = house_number.trim();
+          numberAddition = numberAddition.trim();
+          house.location.street_name = street_name;
+          house.location.house_number = house_number;
+          house.location.numberAddition = numberAddition;
+
           commit("setHouseById", house);
         }
       });

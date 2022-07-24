@@ -147,7 +147,7 @@
     </div>
     <div class="post">
       <button class="button">
-        <span class="button__text">Post</span>
+        <span class="button-text">Post</span>
       </button>
     </div>
   </form>
@@ -180,6 +180,19 @@ export default {
   methods: {
     submitHouse: function () {
       document.querySelector(".button").classList.add("button--loading");
+      // Add '-' before numberAddition, if exists
+      this.newHouse["numberAddition"] =
+        this.newHouse["numberAddition"] != ""
+          ? `-${this.newHouse["numberAddition"]}`
+          : this.newHouse["numberAddition"];
+      //Remove letter from input
+
+      this.newHouse["size"] = this.newHouse["size"]
+        .toString()
+        .toLowerCase()
+        .split("m")[0];
+
+      //Send form values
       this.$store
         .dispatch("newHouse", this.newHouse)
         .then((response) => {
@@ -222,6 +235,7 @@ export default {
         })
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
+      //Get data with the new house
       this.$store.dispatch("getHouses");
       setTimeout(() => {
         this.dispalyCreatedHouse(this.houseId);
@@ -244,55 +258,6 @@ export default {
 </script>
 
 <style>
-/****************************************************************************************************** */
-
-.button {
-  position: relative;
-  padding: 8px 16px;
-  background: #009579;
-  border: none;
-  outline: none;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.button__text {
-  color: #ffffff;
-  transition: all 0.2s;
-}
-
-.button--loading .button__text {
-  visibility: hidden;
-  opacity: 0;
-}
-
-.button--loading::after {
-  content: "";
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  border: 4px solid transparent;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: button-loading-spinner 1s ease infinite;
-}
-
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
-
-  to {
-    transform: rotate(1turn);
-  }
-}
-
-/***************************************************************************************** */
 * {
   font-family: "Montserrat";
 }
@@ -544,5 +509,52 @@ select::-ms-expand {
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 19px;
+}
+
+/************* Button animation ****************** */
+.button {
+  position: relative;
+  padding: 8px 16px;
+  background: #009579;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.button-text {
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading .button-text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
 }
 </style>

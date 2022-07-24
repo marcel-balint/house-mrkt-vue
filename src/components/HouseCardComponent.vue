@@ -2,7 +2,7 @@
   <li>
     <div class="house-item">
       <router-link
-        to="/house/view/:houseId"
+        :to="'/house/view/' + house.id"
         @click="this.getHouseById(house.id)"
       >
         <div class="house-box">
@@ -11,7 +11,9 @@
           </div>
 
           <div class="house-item-detail">
-            <p class="house-item-detail-title">{{ house.location.street }}</p>
+            <p class="house-item-detail-title">
+              {{ house.location.street.replace("-", "") }}
+            </p>
             <p class="house-item-detail-price">
               <img
                 :src="require('../assets/images/ic_price.png')"
