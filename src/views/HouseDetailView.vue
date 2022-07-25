@@ -167,7 +167,6 @@ export default {
   },
   created() {
     this.$store.dispatch("getRecomandation");
-    console.log(this.getHouse.size);
   },
   components: { RecomandedHousesComponent },
 };

@@ -101,11 +101,6 @@ export default {
   cursor: pointer;
 }
 
-/*
-.router-link-active {
-  color: transparent;
-}
-
 /***  Removed the default blue color ***/
 a {
   color: inherit;

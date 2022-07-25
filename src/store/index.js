@@ -24,6 +24,7 @@ export default createStore({
   ],
   state: {
     houses: [],
+
     house: null,
     recomandations: null,
     inputCharacter: "",
@@ -65,7 +66,6 @@ export default createStore({
     },
 
     async delete({ dispatch }, houseId) {
-      console.log("THE ID", houseId);
       return await fetch(getDataURL + "/" + houseId, deleteRequestOptions)
         .then((response) => response.text())
         .then((result) => {
@@ -75,7 +75,7 @@ export default createStore({
         })
         .catch((error) => console.log("error", error));
     },
-    //Set a house displayed on <HouseDetailView/>
+    //Set a house displayed on <HouseDetailView/> component
     setHouse(state, house) {
       console.log({ house });
       let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
@@ -86,27 +86,13 @@ export default createStore({
       }
       //and attach a new house
       state.house = newHouse;
-    } /*
-    filterHouses(state) {
-      if (state.inputCharacter) {
-        return state.houses.filter((house) => {
-          /*  if (
-            house.location.city
-              .toLowerCase()
-              .match(state.inputCharacter.toLowerCase())
-          ) {
-            state.filteredHouses = house;
-          }
-        });*
-          return (
-            house.location.city
-              .toLowerCase()
-              .indexOf(state.inputCharacter.toLowerCase()) != -1
-          );
-        });
-      }
-    },*/,
-
+    },
+    sortByPrice(state) {
+      state.houses.sort((a, b) => (a["price"] > b["price"] ? 1 : -1));
+    },
+    sortBySize(state) {
+      state.houses.sort((a, b) => (a["size"] > b["size"] ? 1 : -1));
+    },
     updateMessageSearch(state, message) {
       state.inputCharacter = message;
     },
@@ -167,8 +153,8 @@ export default createStore({
     getHouseById({ commit, state }, houseId) {
       state.houses.find((house) => {
         if (house.id === houseId) {
-          //Split the 'street' string and assings new values for street_name,
-          //house_number and numberAddition
+          //Split the 'street' string and assign new values for street_name,
+          //house_number and numberAddition properties
           let splittedStreet = house.location.street.split(" ");
           let houseInfo = splittedStreet.pop();
           let street_name = splittedStreet.join(" ");
