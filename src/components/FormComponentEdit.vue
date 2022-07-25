@@ -182,7 +182,6 @@ export default {
     dispalyCreatedHouse(id) {
       this.$store.commit("setHouse", id);
     },
-
     submitHouse: function () {
       document.querySelector(".button").classList.add("button--loading");
 
@@ -192,12 +191,12 @@ export default {
           : this.editHouse["numberAddition"];
       this.editHouse["id"] = this.houseId;
       //Remove letter from input
-      /*  if (/[a-zA-Z]/.test(this.editHouse.size)) {
+      if (/[a-zA-Z]/.test(this.editHouse.size)) {
         this.editHouse["size"] = this.editHouse["size"]
           .toString()
           .toLowerCase()
           .split("m")[0];
-      }*/
+      }
       this.$store
         .dispatch("updateHouse", this.editHouse)
         .then((response) => {

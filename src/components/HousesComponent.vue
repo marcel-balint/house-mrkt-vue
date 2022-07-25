@@ -3,7 +3,7 @@
     <section class="house-items">
       <ul>
         <HouseCardComponent
-          v-for="house in this.houses"
+          v-for="house in filterH"
           :key="house.id"
           :house="house"
         />
@@ -15,10 +15,22 @@
 <script>
 import HouseCardComponent from "./HouseCardComponent";
 import { mapGetters } from "vuex";
-
 export default {
   computed: {
-    ...mapGetters({ houses: "getStateHouses" }),
+    ...mapGetters({ houses: "getStateHouses", inputVal: "getInputCharacter" }),
+    filterH() {
+      return this.houses.filter((house) => {
+        return (
+          house.location.city
+            .toLowerCase()
+            .match(this.inputVal.toLowerCase()) ||
+          house.location.street
+            .toLowerCase()
+            .match(this.inputVal.toLowerCase()) ||
+          house.location.zip.toLowerCase().match(this.inputVal.toLowerCase())
+        );
+      });
+    },
   },
 
   created() {

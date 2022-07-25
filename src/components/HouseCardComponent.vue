@@ -39,7 +39,7 @@
                 <img
                   :src="require('../assets/images/ic_size.png')"
                   alt="size"
-                />{{ house.size }}</span
+                />{{ house.size + " m2" }}</span
               >
             </p>
           </div>

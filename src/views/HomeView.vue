@@ -65,6 +65,7 @@ export default {
       this.$store.commit("updateMessageSearch", e.target.value);
     },
   },
+
   components: { HousesComponent },
 };
 </script>

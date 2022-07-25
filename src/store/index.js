@@ -63,23 +63,6 @@ export default createStore({
     createNewHouse(headers) {
       axios.post(getDataURL, headers);
     },
-    formatSizeProperty(state) {
-      state.houses.forEach((el) => {
-        //Add 'm2' at the end of an integer
-        let houseSizeIntToString = el.size.toString().split("");
-        houseSizeIntToString.push("m2");
-        //remove last char
-        let firstChar = houseSizeIntToString
-          .slice(0, -1)
-          .toString()
-          .replace(/,/g, "");
-
-        //take last char
-        let lastChar = houseSizeIntToString.slice(-1).toString();
-        let finalProp = firstChar + " " + lastChar;
-        el.size = finalProp;
-      });
-    },
 
     async delete({ dispatch }, houseId) {
       console.log("THE ID", houseId);
@@ -103,7 +86,27 @@ export default createStore({
       }
       //and attach a new house
       state.house = newHouse;
-    },
+    } /*
+    filterHouses(state) {
+      if (state.inputCharacter) {
+        return state.houses.filter((house) => {
+          /*  if (
+            house.location.city
+              .toLowerCase()
+              .match(state.inputCharacter.toLowerCase())
+          ) {
+            state.filteredHouses = house;
+          }
+        });*
+          return (
+            house.location.city
+              .toLowerCase()
+              .indexOf(state.inputCharacter.toLowerCase()) != -1
+          );
+        });
+      }
+    },*/,
+
     updateMessageSearch(state, message) {
       state.inputCharacter = message;
     },
@@ -131,7 +134,6 @@ export default createStore({
         .then((response) => response.json())
         .then((result) => {
           commit("setHouses", result);
-          //   commit("formatSizeProperty");
           console.log("getHouses", result);
         })
         .catch((error) => console.log("error", error));

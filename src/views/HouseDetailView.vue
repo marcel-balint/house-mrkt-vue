@@ -57,7 +57,7 @@
                 ><img
                   :src="require('../assets/images/ic_size.png')"
                   alt="size"
-                />{{ getHouse.size }}</span
+                />{{ getHouse.size + " m2" }}</span
               >
               <span class="year"
                 ><img
@@ -167,6 +167,7 @@ export default {
   },
   created() {
     this.$store.dispatch("getRecomandation");
+    console.log(this.getHouse.size);
   },
   components: { RecomandedHousesComponent },
 };
