@@ -16,7 +16,7 @@
                 :src="require('../assets/images/ic_price.png')"
                 alt="price"
               />
-              {{ item.price }}
+              {{ this.formatNumber(item.price) }}
             </p>
             <p class="house-item-detail-address">
               {{ item.location.zip }} {{ item.location.city }}
@@ -45,10 +45,12 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import { formatNumber } from "@/helpers";
 export default {
   props: ["house"],
   methods: {
     ...mapActions(["setHouse"]),
+    formatNumber,
   },
 };
 </script>

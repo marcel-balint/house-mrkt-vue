@@ -82,6 +82,9 @@ export default {
 .noresults-msg p:first-of-type {
   margin-top: 30px;
 }
+.noresults-msg p {
+  font-size: 18px;
+}
 .noresults-msg img {
   width: 450px;
 }

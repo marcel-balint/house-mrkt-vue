@@ -26,7 +26,7 @@ export default createStore({
     houses: [],
 
     house: null,
-    recomandations: null,
+    recommendations: null,
     inputCharacter: "",
     navLinksActiveClass: {
       home: true,
@@ -41,8 +41,8 @@ export default createStore({
     getHouse(state) {
       return state.house;
     },
-    getRecomandations(state) {
-      return state.recomandations;
+    getRecommendations(state) {
+      return state.recommendations;
     },
     getInputCharacter(state) {
       return state.inputCharacter;
@@ -104,13 +104,13 @@ export default createStore({
       state.navLinksActiveClass.about = true;
       state.navLinksActiveClass.home = false;
     },
-    getRecomandation(state) {
+    setRecommendations(state) {
       //Exclude the current displayed house
       let filteredHouses = state.houses.filter((el) => el !== state.house);
 
       //Get 3 random items
       let shuffled = [...filteredHouses].sort(() => 0.5 - Math.random());
-      state.recomandations = shuffled.slice(0, 3);
+      state.recommendations = shuffled.slice(0, 3);
     },
   },
 
@@ -183,8 +183,8 @@ export default createStore({
       commit("setHouse", houseId);
     },
 
-    getRecomandation({ commit }) {
-      commit("getRecomandation");
+    setRecommendations({ commit }) {
+      commit("setRecommendations");
     },
     delete({ commit }, houseId) {
       commit("delete", houseId);

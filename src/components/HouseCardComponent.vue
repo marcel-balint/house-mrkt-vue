@@ -88,6 +88,7 @@
 </template>
 <script>
 import { mapActions } from "vuex";
+import { formatNumber } from "@/helpers";
 export default {
   props: ["house"],
   data() {
@@ -96,9 +97,7 @@ export default {
     };
   },
   methods: {
-    formatNumber(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    },
+    formatNumber,
     toggleModal() {
       this.showModal = !this.showModal;
     },

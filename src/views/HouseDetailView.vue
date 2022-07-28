@@ -84,7 +84,7 @@
                 ><img
                   :src="require('../assets/images/ic_garage.png')"
                   alt="garage"
-                />{{ getHouse.hasGarage ? getHouse.hasGarage : "No" }}</span
+                />{{ getHouse.hasGarage ? "Yes" : "No" }}</span
               >
             </p>
 
@@ -125,9 +125,9 @@
         </div>
       </main>
       <aside class="aside">
-        <h2 class="recomandations-title">Recomanded for you</h2>
+        <h2 class="recomandations-title">Recommended for you</h2>
         <ul>
-          <RecomandedHousesComponent :house="recomandations" />
+          <RecommendedHousesComponent :house="recommendations" />
         </ul>
       </aside>
     </div>
@@ -135,10 +135,10 @@
 </template>
 
 <script>
-import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vue";
+import RecommendedHousesComponent from "@/components/RecommendedHousesComponent.vue";
 
 import { mapGetters, mapActions } from "vuex";
-
+import { formatNumber } from "@/helpers";
 export default {
   data() {
     return {
@@ -148,9 +148,7 @@ export default {
   props: ["houseId"],
 
   methods: {
-    formatNumber(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    },
+    formatNumber,
     deleteHouse(id) {
       this.$store.commit("delete", id);
     },
@@ -162,13 +160,13 @@ export default {
   computed: {
     ...mapGetters({
       getHouse: "getHouse",
-      recomandations: "getRecomandations",
+      recommendations: "getRecommendations",
     }),
   },
   created() {
-    this.$store.dispatch("getRecomandation");
+    this.$store.dispatch("setRecommendations");
   },
-  components: { RecomandedHousesComponent },
+  components: { RecommendedHousesComponent },
 };
 </script>
 
