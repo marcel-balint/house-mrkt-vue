@@ -149,7 +149,9 @@
       ></textarea>
     </div>
     <div class="post">
-      <button class="button">Post</button>
+      <button :class="['button', isDisabled() ? 'button--disabled' : '']">
+        Post
+      </button>
     </div>
   </form>
   <pre>{{ this.house.location.street }}</pre>
@@ -185,6 +187,7 @@ export default {
       this.$store.commit("setHouse", id);
     },
     submitHouse: function () {
+      if (this.isDisabled()) return;
       console.log(this.editHouse);
       document.querySelector(".button").classList.add("button--loading");
       this.editHouse["numberAddition"] =
@@ -202,6 +205,13 @@ export default {
         .catch((error) => {
           console.log(error.message);
         });
+    },
+    isDisabled: function () {
+      let { image, numberAddition, ...allFields } = this.editHouse;
+      return (
+        Object.entries(allFields).some(([key, value]) => value == "") ||
+        (this.selectedFile == null && image == null)
+      );
     },
     async onUpload() {
       let myHeaders = new Headers();
@@ -247,7 +257,8 @@ export default {
     ...mapActions(["getHouseById"]),
     clearImage: function () {
       this.imageURL = null;
-      this.editHouse.image = "";
+      this.editHouse.image = null;
+      this.selectedFile = null;
       //clear the previous value
       document.getElementById("uploadImage").value = "";
     },
@@ -519,7 +530,6 @@ select::-ms-expand {
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
-  opacity: 0.5;
 }
 
 .bg-img-height {
