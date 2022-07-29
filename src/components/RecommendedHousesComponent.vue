@@ -16,7 +16,7 @@
                 :src="require('../assets/images/ic_price.png')"
                 alt="price"
               />
-              {{ item.price }}
+              {{ this.formatNumber(item.price) }}
             </p>
             <p class="house-item-detail-address">
               {{ item.location.zip }} {{ item.location.city }}
@@ -39,30 +39,18 @@
             </p>
           </div>
         </div>
-        <div class="house-item-edit" v-if="item.madeByMe">
-          <span class="item-edit"
-            ><router-link :to="`/house/edit/${item.id}`"
-              ><img
-                :src="require('../assets/images/ic_edit.png')"
-                @click="this.getHouseById(item.id)" /></router-link
-          ></span>
-          <span class="item-delete"
-            ><img
-              :src="require('../assets/images/ic_delete.png')"
-              alt="delete"
-              @click="this.delete(item.id)"
-          /></span>
-        </div>
       </div>
     </router-link>
   </li>
 </template>
 <script>
 import { mapActions } from "vuex";
+import { formatNumber } from "@/helpers";
 export default {
   props: ["house"],
   methods: {
-    ...mapActions(["setHouse", "getHouseById", "delete"]),
+    ...mapActions(["setHouse"]),
+    formatNumber,
   },
 };
 </script>
@@ -150,19 +138,5 @@ a {
 }
 .size {
   display: contents !important;
-}
-
-/********  Edit and Delete icons styles *********/
-.house-item-edit {
-  margin-top: 25px;
-  margin-right: 25px;
-}
-.item-delete {
-  margin-left: 17px;
-}
-.item-edit img,
-.item-delete img {
-  width: 23px;
-  cursor: pointer;
 }
 </style>

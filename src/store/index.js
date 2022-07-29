@@ -16,110 +16,114 @@ const deleteRequestOptions = {
 };
 
 export default createStore({
-	//Keep vuex data on page refresh
-	plugins: [
-		createPersistedState({
-			storage: window.sessionStorage,
-		}),
-	],
-	state: {
-		houses: [],
-		house: null,
-		recomandations: null,
-		inputCharacter: '',
-		navLinksActiveClass: {
-			home: true,
-			about: false,
-		},
-	},
+  //Keep vuex data on page refresh
+  plugins: [
+    createPersistedState({
+      storage: window.sessionStorage,
+    }),
+  ],
+  state: {
+    houses: [],
 
-	getters: {
-		getStateHouses(state) {
-			return state.houses;
-		},
-		getHouse(state) {
-			return state.house;
-		},
-		getRecomandations(state) {
-			return state.recomandations;
-		},
-		getInputCharacter(state) {
-			return state.inputCharacter;
-		},
-		getHome(state) {
-			return state.navLinksActiveClass.home;
-		},
-		getAbout(state) {
-			return state.navLinksActiveClass.about;
-		},
-	},
-	mutations: {
-		setHouseById(state, house) {
-			state.house = house;
-		},
-		setHouses(state, houses) {
-			state.houses = houses;
-		},
-		createNewHouse(headers) {
-			axios.post(getDataURL, headers);
-		},
+    house: null,
+    recommendations: null,
+    inputCharacter: "",
+    navLinksActiveClass: {
+      home: true,
+      about: false,
+    },
+  },
 
-		async delete({ dispatch }, houseId) {
-			console.log('THE ID', houseId);
-			return await fetch(getDataURL + '/' + houseId, deleteRequestOptions)
-				.then(response => response.text())
-				.then(result => {
-					window.location.href = '/';
-					console.log(dispatch, 'response', result);
-					console.log(result);
-				})
-				.catch(error => console.log('error', error));
-		},
-		//Set a house displayed on <HouseDetailView/>
-		setHouse(state, house) {
-			console.log({ house });
-			let newHouse = state.houses.find(
-				el => Number(el.id) === Number(house)
-			);
-			console.log({ newHouse });
-			//clear the current house
-			if (state.house) {
-				state.house = null;
-			}
-			//and attach a new house
-			state.house = newHouse;
-		},
-		updateMessageSearch(state, message) {
-			state.inputCharacter = message;
-		},
-		toggleClassHome(state) {
-			state.navLinksActiveClass.home = true;
-			state.navLinksActiveClass.about = false;
-		},
-		toggleClassAbout(state) {
-			state.navLinksActiveClass.about = true;
-			state.navLinksActiveClass.home = false;
-		},
-		getRecomandation(state) {
-			//Exclude the current displayed house
-			let filteredHouses = state.houses.filter(el => el !== state.house);
+  getters: {
+    getStateHouses(state) {
+      return state.houses;
+    },
+    getHouse(state) {
+      return state.house;
+    },
+    getRecommendations(state) {
+      return state.recommendations;
+    },
+    getInputCharacter(state) {
+      return state.inputCharacter;
+    },
+    getHome(state) {
+      return state.navLinksActiveClass.home;
+    },
+    getAbout(state) {
+      return state.navLinksActiveClass.about;
+    },
+  },
+  mutations: {
+    setHouseById(state, house) {
+      state.house = house;
+    },
+    setHouses(state, houses) {
+      state.houses = houses;
+    },
+    createNewHouse(headers) {
+      axios.post(getDataURL, headers);
+    },
 
-			//Get 3 random items
-			let shuffled = [...filteredHouses].sort(() => 0.5 - Math.random());
-			state.recomandations = shuffled.slice(0, 3);
-		},
-	},
+    async delete({ dispatch }, houseId) {
+      return await fetch(getDataURL + "/" + houseId, deleteRequestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          window.location.href = "/";
+          console.log(dispatch, "response", result);
+          console.log(result);
+        })
+        .catch((error) => console.log("error", error));
+    },
+    //Set a house displayed on <HouseDetailView/> component
+    setHouse(state, house) {
+      console.log({ house });
+      let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
+      console.log({ newHouse });
+      //clear the current house
+      if (state.house) {
+        state.house = null;
+      }
+      //and attach a new house
+      state.house = newHouse;
+    },
+    sortByPrice(state) {
+      state.houses.sort((a, b) => (a["price"] > b["price"] ? 1 : -1));
+    },
+    sortBySize(state) {
+      state.houses.sort((a, b) => (a["size"] > b["size"] ? 1 : -1));
+    },
+    updateMessageSearch(state, message) {
+      state.inputCharacter = message;
+    },
+    toggleClassHome(state) {
+      state.navLinksActiveClass.home = true;
+      state.navLinksActiveClass.about = false;
+    },
+    toggleClassAbout(state) {
+      state.navLinksActiveClass.about = true;
+      state.navLinksActiveClass.home = false;
+    },
+    setRecommendations(state) {
+      //Exclude the current displayed house
+      let filteredHouses = state.houses.filter((el) => el !== state.house);
 
-	actions: {
-		async getHouses({ commit }) {
-			fetch(getDataURL, requestOptions)
-				.then(response => response.json())
-				.then(result => {
-					commit('setHouses', result);
-					console.log(result);
-				})
-				.catch(error => console.log('error', error));
-		},
+      //Get 3 random items
+      let shuffled = [...filteredHouses].sort(() => 0.5 - Math.random());
+      state.recommendations = shuffled.slice(0, 3);
+    },
+  },
+
+  actions: {
+    async getHouses({ commit }) {
+      await fetch(getDataURL, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          commit("setHouses", result);
+          console.log("getHouses", result);
+        })
+        .catch((error) => console.log("error", error));
+    },
 
 		newHouse({ commit }, data) {
 			console.log(commit, 'response', data);
@@ -133,17 +137,47 @@ export default createStore({
 			});
 		},
 
-		updateHouse({ commit }, data) {
-			console.log(commit, 'response', data);
-			return axios({
-				method: 'POST',
-				url: getDataURL + '/' + data.id,
-				headers: {
-					'X-Api-Key': 'GJXtOHyT8QP352l6BZgxY41dmMojFW_N',
-				},
-				data,
-			});
-		},
+    updateHouse({ commit }, data) {
+      console.log(commit, "response update", data);
+      return axios({
+        method: "POST",
+        url: getDataURL + "/" + data.id,
+        headers: {
+          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+        },
+        data,
+      });
+    },
+
+    //Select a specific house based on id
+    getHouseById({ commit, state }, houseId) {
+      state.houses.find((house) => {
+        if (house.id === houseId) {
+          //Split the 'street' string and assign new values for street_name,
+          //house_number and numberAddition properties
+          let splittedStreet = house.location.street.split(" ");
+          let houseInfo = splittedStreet.pop();
+          let street_name = splittedStreet.join(" ");
+          let splittedHouseInfo = houseInfo.split(/-(.*)/s);
+
+          let [house_number, numberAddition] = ["", ""];
+          if (splittedHouseInfo.length > 1) {
+            [house_number, numberAddition] = splittedHouseInfo;
+          } else {
+            house_number = splittedHouseInfo[0];
+          }
+
+          street_name = street_name.trim();
+          house_number = house_number.trim();
+          numberAddition = numberAddition.trim();
+          house.location.street_name = street_name;
+          house.location.house_number = house_number;
+          house.location.numberAddition = numberAddition;
+
+          commit("setHouseById", house);
+        }
+      });
+    },
 
 		//Select a specific house based on id
 		getHouseById({ commit, state }, houseId) {

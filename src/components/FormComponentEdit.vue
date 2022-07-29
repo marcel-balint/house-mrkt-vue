@@ -9,8 +9,13 @@
       <input
         type="text"
         v-model="editHouse.streetName"
+        @input="showErrorMsg.streetName = editHouse.streetName === ''"
+        :class="showErrorMsg.streetName ? 'error-active' : ''"
         placeholder="Enter the street name"
       />
+      <p class="error-message" v-if="showErrorMsg.streetName">
+        Required field missing.
+      </p>
     </div>
     <div class="house-number-row">
       <div class="house-number-label">
@@ -18,8 +23,13 @@
         <input
           type="text"
           v-model="editHouse.houseNumber"
+          @input="showErrorMsg.houseNumber = editHouse.houseNumber === ''"
+          :class="showErrorMsg.houseNumber ? 'error-active' : ''"
           placeholder="Enter house number"
         />
+        <p class="error-message" v-if="showErrorMsg.houseNumber">
+          Required field missing.
+        </p>
       </div>
       <div class="addition-label">
         <label for="add">Addition (optional)</label><br />
@@ -33,12 +43,31 @@
     <br />
     <div class="post-code">
       <label for="post-code">Post code*</label><br />
-      <input type="text" v-model="editHouse.zip" placeholder="Eg. 1000 AA" />
+      <input
+        type="text"
+        v-model="editHouse.zip"
+        @input="showErrorMsg.zip = editHouse.zip === ''"
+        :class="showErrorMsg.zip ? 'error-active' : ''"
+        placeholder="Eg. 1000 AA"
+      />
+      <p class="error-message" v-if="showErrorMsg.zip">
+        Required field missing.
+      </p>
     </div>
     <br />
     <div class="city">
       <label for="city">City*</label><br />
-      <input type="text" v-model="editHouse.city" v placeholder="Eg. Utrecht" />
+      <input
+        type="text"
+        v-model="editHouse.city"
+        @input="showErrorMsg.city = editHouse.city === ''"
+        :class="showErrorMsg.city ? 'error-active' : ''"
+        v
+        placeholder="Eg. Utrecht"
+      />
+      <p class="error-message" v-if="showErrorMsg.city">
+        Required field missing.
+      </p>
     </div>
     <div class="upload-image-box">
       <p>Upload picture (PNG or JPG)*</p>
@@ -60,11 +89,12 @@
       >
         <span
           class="upload-image-square"
-          :class="
+          :class="[
             imageURL || editHouse.image
               ? 'upload-image-square-active'
-              : 'upload-image-square'
-          "
+              : 'upload-image-square',
+            imageURL === null || editHouse.image == null ? 'upload-image--error' : '',
+          ]"
         >
           <img
             class="uploaded-image"
@@ -85,16 +115,37 @@
           <br />
         </span>
       </label>
+      <p class="error-message mt-0" v-if="imageURL === null">
+        Required field missing.
+      </p>
     </div>
 
     <div class="price">
       <label for="price">Price*</label><br />
-      <input type="text" v-model="editHouse.price" placeholder="eg. €150.000" />
+      <input
+        type="text"
+        @input="showErrorMsg.price = editHouse.price === ''"
+        :class="showErrorMsg.price ? 'error-active' : ''"
+        v-model="editHouse.price"
+        placeholder="eg. €150.000"
+      />
+      <p class="error-message" v-if="showErrorMsg.price">
+        Required field missing.
+      </p>
     </div>
     <div class="size-garage-row">
       <div class="size">
         <label for="size">Size*</label><br />
-        <input type="text" v-model="editHouse.size" placeholder="eg. 60m2" />
+        <input
+          type="text"
+          @input="showErrorMsg.size = editHouse.size === ''"
+          :class="showErrorMsg.size ? 'error-active' : ''"
+          v-model="editHouse.size"
+          placeholder="eg. 60m2"
+        />
+        <p class="error-message" v-if="showErrorMsg.size">
+          Required field missing.
+        </p>
       </div>
       <div class="garage">
         <span>Garage*</span>
@@ -102,6 +153,8 @@
           <label>
             <select
               name="garage"
+              @input="showErrorMsg.hasGarage = editHouse.hasGarage === ''"
+              :class="showErrorMsg.hasGarage ? 'error-active' : ''"
               v-model="editHouse.hasGarage"
               class="garage-select"
             >
@@ -111,6 +164,9 @@
             </select>
           </label>
         </div>
+        <p class="error-message" v-if="showErrorMsg.hasGarage">
+          Required field missing.
+        </p>
       </div>
     </div>
     <div class="bedrooms-bathrooms-row">
@@ -119,16 +175,26 @@
         <input
           type="text"
           v-model="editHouse.bedrooms"
+          @input="showErrorMsg.bedrooms = editHouse.bedrooms === ''"
+          :class="showErrorMsg.bedrooms ? 'error-active' : ''"
           placeholder="Enter amount"
         />
+        <p class="error-message" v-if="showErrorMsg.bedrooms">
+          Required field missing.
+        </p>
       </div>
       <div class="bathrooms">
         <label for="bathrooms">Bathrooms*</label><br />
         <input
           type="text"
           v-model="editHouse.bathrooms"
+          @input="showErrorMsg.bathrooms = editHouse.bathrooms === ''"
+          :class="showErrorMsg.bathrooms ? 'error-active' : ''"
           placeholder="Enter amount"
         />
+        <p class="error-message" v-if="showErrorMsg.bathrooms">
+          Required field missing.
+        </p>
       </div>
     </div>
     <div class="construction-date">
@@ -136,8 +202,15 @@
       <input
         type="text"
         v-model="editHouse.constructionYear"
+        @input="
+          showErrorMsg.constructionYear = editHouse.constructionYear === ''
+        "
+        :class="showErrorMsg.constructionYear ? 'error-active' : ''"
         placeholder="eg. 1990"
       />
+      <p class="error-message" v-if="showErrorMsg.constructionYear">
+        Required field missing.
+      </p>
     </div>
     <div class="description">
       <p><label for="description">Description*</label></p>
@@ -145,8 +218,13 @@
         rows="4"
         cols="44"
         v-model="editHouse.description"
+        @input="showErrorMsg.description = editHouse.description === ''"
+        :class="showErrorMsg.description ? 'error-active' : ''"
         placeholder="Enter description"
       ></textarea>
+      <p class="error-message" v-if="showErrorMsg.description">
+        Required field missing.
+      </p>
     </div>
     <div class="post">
       <button :class="['button', isDisabled() ? 'button--disabled' : '']">
@@ -165,6 +243,20 @@ export default {
     return {
       houseId: this.$route.params.houseId,
       imageURL: "",
+      showErrorMsg: {
+        streetName: false,
+        houseNumber: false,
+        zip: false,
+        city: false,
+        image: false,
+        price: false,
+        size: false,
+        hasGarage: false,
+        bedrooms: false,
+        bathrooms: false,
+        constructionYear: false,
+        description: false,
+      },
       editHouse: {
         streetName: "",
         houseNumber: "",
@@ -186,8 +278,19 @@ export default {
     dispalyCreatedHouse(id) {
       this.$store.commit("setHouse", id);
     },
+    showErrors: function () {
+      let { image, numberAddition, ...allFields } = this.editHouse;
+      Object.entries(allFields).map(([key, value]) => {
+        this.showErrorMsg[key] = value === "" || value === null;
+      });
+      if ((this.selectedFile === null && image === null) || image === "")
+        this.imageURL = null;
+    },
     submitHouse: function () {
-      if (this.isDisabled()) return;
+      if (this.isDisabled()) {
+        this.showErrors();
+        return;
+      }
       console.log(this.editHouse);
       document.querySelector(".button").classList.add("button--loading");
       this.editHouse["numberAddition"] =
@@ -195,6 +298,13 @@ export default {
           ? `-${this.editHouse["numberAddition"]}`
           : this.editHouse["numberAddition"];
       this.editHouse["id"] = this.houseId;
+      //Remove letter from input
+      if (/[a-zA-Z]/.test(this.editHouse.size)) {
+        this.editHouse["size"] = this.editHouse["size"]
+          .toString()
+          .toLowerCase()
+          .split("m")[0];
+      }
       this.$store
         .dispatch("updateHouse", this.editHouse)
         .then((response) => {
@@ -208,10 +318,11 @@ export default {
     },
     isDisabled: function () {
       let { image, numberAddition, ...allFields } = this.editHouse;
-      return (
-        Object.entries(allFields).some(([key, value]) => value == "") ||
-        (this.selectedFile == null && image == null)
+      console.log({ allFields });
+      let is = Object.entries(allFields).some(
+        ([key, value]) => value === "" || value === null
       );
+      return is || this.imageURL === null;
     },
     async onUpload() {
       let myHeaders = new Headers();
@@ -385,7 +496,7 @@ form input {
   display: none;
 }
 
-.upload-image-box p {
+.upload-image-box p:first-child {
   padding-top: 15px;
   padding-bottom: 15px;
 }
@@ -538,5 +649,52 @@ select::-ms-expand {
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 19px;
+}
+
+/**************** Button animation*************** */
+.button {
+  position: relative;
+  padding: 8px 16px;
+  background: #009579;
+  border: none;
+  outline: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.button-text {
+  color: #ffffff;
+  transition: all 0.2s;
+}
+
+.button--loading .button-text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.button--loading::after {
+  content: "";
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  border: 4px solid transparent;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: button-loading-spinner 1s ease infinite;
+}
+
+@keyframes button-loading-spinner {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
 }
 </style>

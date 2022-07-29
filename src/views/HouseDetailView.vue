@@ -32,7 +32,7 @@
                       @click="this.getHouseById(getHouse.id)"
                       alt="edit" /></router-link
                 ></span>
-                <span class="delete cursor-pointer" @click="showModal = true"
+                <span class="delete cursor-pointer" @click="this.toggleModal"
                   ><img
                     :src="require('../assets/images/ic_delete.png')"
                     alt="delete"
@@ -57,7 +57,7 @@
                 ><img
                   :src="require('../assets/images/ic_size.png')"
                   alt="size"
-                />{{ getHouse.size }}</span
+                />{{ getHouse.size + " m2" }}</span
               >
               <span class="year"
                 ><img
@@ -84,7 +84,7 @@
                 ><img
                   :src="require('../assets/images/ic_garage.png')"
                   alt="garage"
-                />{{ getHouse.hasGarage ? getHouse.hasGarage : "No" }}</span
+                />{{ getHouse.hasGarage ? "Yes" : "No" }}</span
               >
             </p>
 
@@ -93,37 +93,41 @@
             </div>
           </div>
         </div>
-        <div v-if="showModal == true" class="modal">
-          <span @click="showModal = false" class="close" title="Close Modal"
-            >&times;</span
-          >
-          <div class="container">
-            <h1>Delete Listing</h1>
-            <p>Are you sure you want to delete your listing?</p>
-
-            <div class="clearfix">
+        <!-----   Modal  ----->
+        <div
+          v-if="showModal"
+          class="modal"
+          :class="{ 'show-modal': showModal }"
+        >
+          <div class="modal-content">
+            <div class="modal-text">
+              <h1>Delete Listing</h1>
+              <p class="para">Are you sure you want to delete this listing?</p>
+              <p>This action cannot be undone.</p>
+            </div>
+            <div class="modal-btns">
               <button
                 type="button"
-                class="cancelbtn"
-                @click="showModal = false"
+                class="delete-btn"
+                @click="this.deleteHouse(getHouse.id)"
               >
-                Cancel
+                Yes, delete
               </button>
               <button
                 type="button"
-                class="deletebtn"
-                @click="deleteHouse(getHouse.id)"
+                class="cancel-btn"
+                @click="this.toggleModal"
               >
-                Delete
+                Go back
               </button>
             </div>
           </div>
         </div>
       </main>
       <aside class="aside">
-        <h2 class="recomandations-title">Recomanded for you</h2>
+        <h2 class="recomandations-title">Recommended for you</h2>
         <ul>
-          <RecomandedHousesComponent :house="recomandations" />
+          <RecommendedHousesComponent :house="recommendations" />
         </ul>
       </aside>
     </div>
@@ -131,10 +135,10 @@
 </template>
 
 <script>
-import RecomandedHousesComponent from "@/components/RecomandedHousesComponent.vue";
+import RecommendedHousesComponent from "@/components/RecommendedHousesComponent.vue";
 
-import { mapActions, mapGetters } from "vuex";
-
+import { mapGetters, mapActions } from "vuex";
+import { formatNumber } from "@/helpers";
 export default {
   data() {
     return {
@@ -144,9 +148,7 @@ export default {
   props: ["houseId"],
 
   methods: {
-    formatNumber(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    },
+    formatNumber,
     deleteHouse(id) {
       this.$store.commit("delete", id);
     },
@@ -155,13 +157,13 @@ export default {
   computed: {
     ...mapGetters({
       getHouse: "getHouse",
-      recomandations: "getRecomandations",
+      recommendations: "getRecommendations",
     }),
   },
   created() {
-    this.$store.dispatch("getRecomandation");
+    this.$store.dispatch("setRecommendations");
   },
-  components: { RecomandedHousesComponent },
+  components: { RecommendedHousesComponent },
 };
 </script>
 
@@ -261,6 +263,9 @@ export default {
   letter-spacing: 1px;
 }
 
+.delete {
+  cursor: pointer;
+}
 /*****************Icon styles************/
 
 .delete img,
@@ -290,5 +295,80 @@ export default {
 }
 .recomandations-title {
   margin-top: 48px;
+}
+
+/********  Modal ******************** */
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  animation-name: animation;
+  animation-duration: 0.3s;
+}
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: 700px;
+  height: 400px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+@keyframes animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.show-modal {
+  opacity: 1;
+  visibility: visible;
+}
+.modal-text {
+  text-align: center;
+}
+.para {
+  margin-top: 30px;
+}
+.modal-btns {
+  display: flex;
+  flex-direction: column;
+}
+.cancel-btn {
+  margin-top: 20px;
+  background-color: #000;
+}
+.delete-btn {
+  background-color: #eb5440;
+}
+.cancel-btn,
+.delete-btn {
+  border: none;
+  width: 400px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
 }
 </style>

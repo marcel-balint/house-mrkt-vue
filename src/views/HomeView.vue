@@ -35,8 +35,25 @@
           </form>
 
           <div class="filter-btns">
-            <button class="filter-btn-price">Price</button
-            ><button class="filter-btn-size">Size</button>
+            <button
+              class="filter-btn-price"
+              :class="priceActive ? 'active' : ''"
+              @click="
+                sortByPrice();
+                activePrice();
+              "
+            >
+              Price</button
+            ><button
+              class="filter-btn-size"
+              :class="sizeActive ? 'active' : ''"
+              @click="
+                sortBySize();
+                activeSize();
+              "
+            >
+              Size
+            </button>
           </div>
         </div>
       </div>
@@ -47,7 +64,12 @@
 
 <script>
 import HousesComponent from "../components/HousesComponent.vue";
+import { mapMutations } from "vuex";
+
 export default {
+  data() {
+    return { priceActive: true, sizeActive: false };
+  },
   computed: {
     inputCharacter: {
       get() {
@@ -61,14 +83,27 @@ export default {
   },
 
   methods: {
+    activePrice() {
+      this.priceActive = true;
+      this.sizeActive = false;
+    },
+    activeSize() {
+      this.sizeActive = true;
+      this.priceActive = false;
+    },
     updateMessageSearch(e) {
       this.$store.commit("updateMessageSearch", e.target.value);
     },
+    ...mapMutations(["sortByPrice", "sortBySize"]),
   },
+
   components: { HousesComponent },
 };
 </script>
 <style scoped>
+.active {
+  background-color: #eb5440 !important;
+}
 /******** Montserrat font *****/
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap");
 
@@ -191,7 +226,6 @@ input::-webkit-search-cancel-button {
 }
 .filter-btn-price {
   border-radius: 10px 0px 0px 10px;
-  background-color: #eb5440;
 }
 .filter-btn-size {
   border-radius: 0px 10px 10px 0px;

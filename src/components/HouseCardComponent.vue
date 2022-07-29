@@ -39,7 +39,7 @@
                 <img
                   :src="require('../assets/images/ic_size.png')"
                   alt="size"
-                />{{ house.size }}</span
+                />{{ house.size + " m2" }}</span
               >
             </p>
           </div>
@@ -57,20 +57,49 @@
           ><img
             :src="require('../assets/images/ic_delete.png')"
             alt="delete"
-            @click="this.delete(house.id)"
+            @click="this.toggleModal"
         /></span>
+      </div>
+    </div>
+    <!-----   Modal  ----->
+    <div v-if="showModal" class="modal" :class="{ 'show-modal': showModal }">
+      <div class="modal-content">
+        <div class="modal-text">
+          <h1>Delete Listing</h1>
+
+          <p class="para">Are you sure you want to delete this listing?</p>
+          <p>This action cannot be undone.</p>
+        </div>
+        <div class="modal-btns">
+          <button
+            type="button"
+            class="delete-btn"
+            @click="this.delete(house.id)"
+          >
+            Yes, delete
+          </button>
+          <button type="button" class="cancel-btn" @click="this.toggleModal">
+            Go back
+          </button>
+        </div>
       </div>
     </div>
   </li>
 </template>
 <script>
 import { mapActions } from "vuex";
+import { formatNumber } from "@/helpers";
 export default {
   props: ["house"],
-
+  data() {
+    return {
+      showModal: false,
+    };
+  },
   methods: {
-    formatNumber(num) {
-      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+    formatNumber,
+    toggleModal() {
+      this.showModal = !this.showModal;
     },
     ...mapActions(["getHouseById", "delete"]),
   },
@@ -179,5 +208,80 @@ a {
   width: 23px;
   cursor: pointer;
   z-index: 5;
+}
+
+/********  Modal ******************** */
+.modal {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1;
+  animation-name: animation;
+  animation-duration: 0.3s;
+}
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  width: 700px;
+  height: 400px;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+}
+
+@keyframes animation {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.show-modal {
+  opacity: 1;
+  visibility: visible;
+}
+.modal-text {
+  text-align: center;
+}
+.para {
+  margin-top: 30px;
+}
+.modal-btns {
+  display: flex;
+  flex-direction: column;
+}
+.cancel-btn {
+  margin-top: 20px;
+  background-color: #000;
+}
+.delete-btn {
+  background-color: #eb5440;
+}
+.cancel-btn,
+.delete-btn {
+  border: none;
+  width: 400px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
 }
 </style>

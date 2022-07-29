@@ -10,7 +10,6 @@
               " /></router-link
           >Back to detail page</span
         >
-        house IDDDD {{ house.id }}
       </div>
       <div class="header-create">
         <h1>Edit listing</h1>
@@ -30,6 +29,9 @@ export default {
     };
   },
   computed: { ...mapGetters({ house: "getHouse" }) },
+  created() {
+    this.$store.dispatch("getHouseById", this.houseId);
+  },
   components: { FormComponentEdit },
   created() {
     console.log(this.houseId);
