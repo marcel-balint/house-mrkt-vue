@@ -151,7 +151,7 @@
               name="garage"
               v-model="newHouse.hasGarage"
               class="garage-select"
-              @input="showErrorMsg.hasGarage = newHouse.hasGarage === ''"
+              @change="showErrorMsg.hasGarage = newHouse.hasGarage === ''"
               :class="showErrorMsg.hasGarage ? 'error-active' : ''"
             >
               <option value="" selected disabled hidden>Select</option>
