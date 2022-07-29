@@ -10,7 +10,7 @@
         type="text"
         v-model="newHouse.streetName"
         placeholder="Enter the street name"
-        @input="showErrorMsg.streetName = newHouse.streetName == ''"
+        @input="showErrorMsg.streetName = newHouse.streetName === ''"
         :class="showErrorMsg.streetName ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.streetName">
@@ -24,7 +24,7 @@
           type="text"
           v-model.number="newHouse.houseNumber"
           placeholder="Enter house number"
-          @input="showErrorMsg.houseNumber = newHouse.houseNumber == ''"
+          @input="showErrorMsg.houseNumber = newHouse.houseNumber === ''"
           :class="showErrorMsg.houseNumber ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.houseNumber">
@@ -47,7 +47,7 @@
         type="text"
         v-model="newHouse.zip"
         placeholder="Eg. 1000 AA"
-        @input="showErrorMsg.zip = newHouse.zip == ''"
+        @input="showErrorMsg.zip = newHouse.zip === ''"
         :class="showErrorMsg.zip ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.zip">
@@ -61,7 +61,7 @@
         type="text"
         v-model="newHouse.city"
         placeholder="Eg. Utrecht"
-        @input="showErrorMsg.city = newHouse.city == ''"
+        @input="showErrorMsg.city = newHouse.city === ''"
         :class="showErrorMsg.city ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.city">
@@ -88,7 +88,7 @@
           class="upload-image-square"
           :class="[
             imageURL ? 'upload-image-square-active' : 'upload-image-square',
-            imageURL == null ? 'upload-image--error' : '',
+            imageURL === null ? 'upload-image--error' : '',
           ]"
         >
           <img
@@ -111,7 +111,7 @@
           <br />
         </span>
       </label>
-      <p class="error-message mt-0" v-if="imageURL == null">
+      <p class="error-message mt-0" v-if="imageURL === null">
         Required field missing.
       </p>
     </div>
@@ -122,7 +122,7 @@
         type="text"
         v-model.number="newHouse.price"
         placeholder="eg. €150.000"
-        @input="showErrorMsg.price = newHouse.price == ''"
+        @input="showErrorMsg.price = newHouse.price === ''"
         :class="showErrorMsg.price ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.price">
@@ -136,7 +136,7 @@
           type="text"
           v-model.number="newHouse.size"
           placeholder="eg. 60m2"
-          @input="showErrorMsg.size = newHouse.size == ''"
+          @input="showErrorMsg.size = newHouse.size === ''"
           :class="showErrorMsg.size ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.size">
@@ -151,7 +151,7 @@
               name="garage"
               v-model="newHouse.hasGarage"
               class="garage-select"
-              @input="showErrorMsg.hasGarage = newHouse.hasGarage == ''"
+              @input="showErrorMsg.hasGarage = newHouse.hasGarage === ''"
               :class="showErrorMsg.hasGarage ? 'error-active' : ''"
             >
               <option value="" selected disabled hidden>Select</option>
@@ -172,7 +172,7 @@
           type="text"
           v-model.number="newHouse.bedrooms"
           placeholder="Enter amount"
-          @input="showErrorMsg.bedrooms = newHouse.bedrooms == ''"
+          @input="showErrorMsg.bedrooms = newHouse.bedrooms === ''"
           :class="showErrorMsg.bedrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bedrooms">
@@ -185,7 +185,7 @@
           type="text"
           v-model.number="newHouse.bathrooms"
           placeholder="Enter amount"
-          @input="showErrorMsg.bathrooms = newHouse.bathrooms == ''"
+          @input="showErrorMsg.bathrooms = newHouse.bathrooms === ''"
           :class="showErrorMsg.bathrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bathrooms">
@@ -199,7 +199,7 @@
         type="text"
         v-model.number="newHouse.constructionYear"
         placeholder="eg. 1990"
-        @input="showErrorMsg.constructionYear = newHouse.constructionYear == ''"
+        @input="showErrorMsg.constructionYear = newHouse.constructionYear === ''"
         :class="showErrorMsg.constructionYear ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.constructionYear">
@@ -213,7 +213,7 @@
         rows="4"
         cols="44"
         placeholder="Enter description"
-        @input="showErrorMsg.description = newHouse.description == ''"
+        @input="showErrorMsg.description = newHouse.description === ''"
         :class="showErrorMsg.description ? 'error-active' : ''"
       ></textarea>
       <p class="error-message" v-if="showErrorMsg.description">
@@ -272,15 +272,15 @@ export default {
     showErrors: function () {
       let { image, numberAddition, ...allFields } = this.newHouse;
       Object.entries(allFields).map(([key, value]) => {
-        this.showErrorMsg[key] = value == "" || value == null;
+        this.showErrorMsg[key] = value === "" || value === null;
       });
-      if (this.selectedFile == null) this.imageURL = null;
+      if (this.selectedFile === null) this.imageURL = null;
     },
     isDisabled: function () {
       let { image, numberAddition, ...allFields } = this.newHouse;
       return (
-        Object.entries(allFields).some(([key, value]) => value == "") ||
-        this.selectedFile == null
+        Object.entries(allFields).some(([key, value]) => value === "") ||
+        this.selectedFile === null
       );
     },
     submitHouse: function () {
