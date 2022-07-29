@@ -146,7 +146,7 @@
       ></textarea>
     </div>
     <div class="post">
-      <button class="button">
+      <button :class="['button', isDisabled() ? 'button--disabled' : '']">
         <span class="button__text">Post</span>
       </button>
     </div>
@@ -178,7 +178,13 @@ export default {
     };
   },
   methods: {
+    isDisabled: function () {
+      let { image,numberAddition, ...allFields } = this.newHouse;
+      return Object.entries(allFields).some(([key, value]) => value == "") || this.selectedFile == null;
+    },
     submitHouse: function () {
+      if(this.isDisabled())
+        return;
       document.querySelector(".button").classList.add("button--loading");
       this.newHouse["numberAddition"] =
         this.newHouse["numberAddition"] != ""
@@ -239,6 +245,7 @@ export default {
     clearImage: function () {
       this.imageURL = null;
       this.imagePresent = false;
+      this.selectedFile = null;
 
       //clear the previous value
       document.getElementById("uploadImage").value = "";
@@ -258,6 +265,11 @@ export default {
   outline: none;
   border-radius: 2px;
   cursor: pointer;
+}
+
+.button--disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
 }
 
 .button__text {
@@ -539,7 +551,6 @@ select::-ms-expand {
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
-  opacity: 0.5;
 }
 
 .bg-img-height {
