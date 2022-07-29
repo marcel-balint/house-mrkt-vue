@@ -179,12 +179,14 @@ export default {
   },
   methods: {
     isDisabled: function () {
-      let { image,numberAddition, ...allFields } = this.newHouse;
-      return Object.entries(allFields).some(([key, value]) => value == "") || this.selectedFile == null;
+      let { image, numberAddition, ...allFields } = this.newHouse;
+      return (
+        Object.entries(allFields).some(([key, value]) => value == "") ||
+        this.selectedFile == null
+      );
     },
     submitHouse: function () {
-      if(this.isDisabled())
-        return;
+      if (this.isDisabled()) return;
       document.querySelector(".button").classList.add("button--loading");
       this.newHouse["numberAddition"] =
         this.newHouse["numberAddition"] != ""
