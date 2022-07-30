@@ -1,18 +1,18 @@
-import { createStore } from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
+import { createStore } from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
-import axios from 'axios';
-
-const getDataURL = 'https://api.intern.d-tt.nl/api/houses';
+import axios from "axios";
+const apiKey = "GJXtOHyT8QP352l6BZgxY41dmMojFW_N";
+const getDataURL = "https://api.intern.d-tt.nl/api/houses";
 const myHeaders = new Headers();
-myHeaders.append('X-Api-Key', 'GJXtOHyT8QP352l6BZgxY41dmMojFW_N');
+myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
 
 const requestOptions = {
-	headers: myHeaders,
+  headers: myHeaders,
 };
 const deleteRequestOptions = {
-	method: 'DELETE',
-	headers: myHeaders,
+  method: "DELETE",
+  headers: myHeaders,
 };
 
 export default createStore({
@@ -71,15 +71,13 @@ export default createStore({
         .then((result) => {
           window.location.href = "/";
           console.log(dispatch, "response", result);
-          console.log(result);
         })
         .catch((error) => console.log("error", error));
     },
     //Set a house displayed on <HouseDetailView/> component
     setHouse(state, house) {
-      console.log({ house });
       let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
-      console.log({ newHouse });
+
       //clear the current house
       if (state.house) {
         state.house = null;
@@ -125,17 +123,17 @@ export default createStore({
         .catch((error) => console.log("error", error));
     },
 
-		newHouse({ commit }, data) {
-			console.log(commit, 'response', data);
-			return axios({
-				method: 'POST',
-				url: getDataURL,
-				headers: {
-					'X-Api-Key': 'GJXtOHyT8QP352l6BZgxY41dmMojFW_N',
-				},
-				data,
-			});
-		},
+    newHouse({ commit }, data) {
+      console.log(commit, "response", data);
+      return axios({
+        method: "POST",
+        url: getDataURL,
+        headers: {
+          "X-Api-Key": apiKey,
+        },
+        data,
+      });
+    },
 
     updateHouse({ commit }, data) {
       console.log(commit, "response update", data);
@@ -143,7 +141,7 @@ export default createStore({
         method: "POST",
         url: getDataURL + "/" + data.id,
         headers: {
-          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+          "X-Api-Key": apiKey,
         },
         data,
       });
@@ -178,50 +176,22 @@ export default createStore({
         }
       });
     },
+    setHouse({ commit }, houseId) {
+      commit("setHouse", houseId);
+    },
 
-		//Select a specific house based on id
-		getHouseById({ commit, state }, houseId) {
-			state.houses.find(house => {
-				if (house.id === houseId) {
-					let splittedStreet = house.location.street.split(' ');
-					let houseInfo = splittedStreet.pop();
-					let street_name = splittedStreet.join(' ');
-					let splittedHouseInfo = houseInfo.split(/-(.*)/s);
-
-					let [house_number, numberAddition] = ['', ''];
-					if (splittedHouseInfo.length > 1) {
-						[house_number, numberAddition] = splittedHouseInfo;
-					} else {
-						house_number = splittedHouseInfo[0];
-					}
-					street_name = street_name.trim();
-					house_number = house_number.trim();
-					numberAddition = numberAddition.trim();
-					house.location.street_name = street_name;
-					house.location.house_number = house_number;
-					house.location.numberAddition = numberAddition;
-
-					commit('setHouseById', house);
-				}
-			});
-		},
-
-		setHouse({ commit }, houseId) {
-			commit('setHouse', houseId);
-		},
-
-		getRecomandation({ commit }) {
-			commit('getRecomandation');
-		},
-		delete({ commit }, houseId) {
-			commit('delete', houseId);
-		},
-		toggleClassHome(context) {
-			context.commit('toggleClassHome');
-		},
-		toggleClassAbout(context) {
-			context.commit('toggleClassAbout');
-		},
-	},
-	modules: {},
+    setRecommendations({ commit }) {
+      commit("setRecommendations");
+    },
+    delete({ commit }, houseId) {
+      commit("delete", houseId);
+    },
+    toggleClassHome(context) {
+      context.commit("toggleClassHome");
+    },
+    toggleClassAbout(context) {
+      context.commit("toggleClassAbout");
+    },
+  },
+  modules: {},
 });

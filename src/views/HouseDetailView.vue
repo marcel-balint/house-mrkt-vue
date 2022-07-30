@@ -109,7 +109,7 @@
               <button
                 type="button"
                 class="delete-btn"
-                @click="this.deleteHouse(getHouse.id)"
+                @click="this.delete(getHouse.id)"
               >
                 Yes, delete
               </button>
@@ -149,10 +149,10 @@ export default {
 
   methods: {
     formatNumber,
-    deleteHouse(id) {
-      this.$store.commit("delete", id);
+    toggleModal() {
+      this.showModal = !this.showModal;
     },
-    ...mapActions(["getHouseById"]),
+    ...mapActions(["getHouseById", "delete"]),
   },
   computed: {
     ...mapGetters({

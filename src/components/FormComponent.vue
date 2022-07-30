@@ -24,11 +24,14 @@
           type="text"
           v-model.number="newHouse.houseNumber"
           placeholder="Enter house number"
-          @input="showErrorMsg.houseNumber = newHouse.houseNumber === ''"
+          @input="
+            showErrorMsg.houseNumber =
+              newHouse.houseNumber === '' || isNaN(newHouse.houseNumber)
+          "
           :class="showErrorMsg.houseNumber ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.houseNumber">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="addition-label">
@@ -122,11 +125,13 @@
         type="text"
         v-model.number="newHouse.price"
         placeholder="eg. €150.000"
-        @input="showErrorMsg.price = newHouse.price === ''"
+        @input="
+          showErrorMsg.price = newHouse.price === '' || isNaN(newHouse.price)
+        "
         :class="showErrorMsg.price ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.price">
-        Required field missing.
+        Required field missing (number).
       </p>
     </div>
     <div class="size-garage-row">
@@ -172,11 +177,14 @@
           type="text"
           v-model.number="newHouse.bedrooms"
           placeholder="Enter amount"
-          @input="showErrorMsg.bedrooms = newHouse.bedrooms === ''"
+          @input="
+            showErrorMsg.bedrooms =
+              newHouse.bedrooms === '' || isNaN(newHouse.bedrooms)
+          "
           :class="showErrorMsg.bedrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bedrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="bathrooms">
@@ -185,11 +193,14 @@
           type="text"
           v-model.number="newHouse.bathrooms"
           placeholder="Enter amount"
-          @input="showErrorMsg.bathrooms = newHouse.bathrooms === ''"
+          @input="
+            showErrorMsg.bathrooms =
+              newHouse.bathrooms === '' || isNaN(newHouse.bathrooms)
+          "
           :class="showErrorMsg.bathrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bathrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
     </div>
@@ -199,11 +210,16 @@
         type="text"
         v-model.number="newHouse.constructionYear"
         placeholder="eg. 1990"
-        @input="showErrorMsg.constructionYear = newHouse.constructionYear === ''"
+        @input="
+          showErrorMsg.constructionYear =
+            newHouse.constructionYear === '' ||
+            isNaN(newHouse.constructionYear) ||
+            newHouse.constructionYear <= 1901
+        "
         :class="showErrorMsg.constructionYear ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.constructionYear">
-        Required field missing.
+        Required field missing (number higer than<strong> 1901 </strong>).
       </p>
     </div>
     <div class="description">
@@ -269,37 +285,39 @@ export default {
     };
   },
   methods: {
-    showErrors: function () {
-      let { image, numberAddition, ...allFields } = this.newHouse;
+    showErrors() {
+      let { ...allFields } = this.newHouse;
+      //Check for empty form field and attach the error message, if is true
       Object.entries(allFields).map(([key, value]) => {
         this.showErrorMsg[key] = value === "" || value === null;
       });
       if (this.selectedFile === null) this.imageURL = null;
     },
-    isDisabled: function () {
+    isDisabled() {
       let { image, numberAddition, ...allFields } = this.newHouse;
       return (
         Object.entries(allFields).some(([key, value]) => value === "") ||
         this.selectedFile === null
       );
     },
-    submitHouse: function () {
+    submitHouse() {
       if (this.isDisabled()) {
         this.showErrors();
         return;
       }
       document.querySelector(".button").classList.add("button--loading");
+      //Add '-' in front of 'numberAddition'
       this.newHouse["numberAddition"] =
         this.newHouse["numberAddition"] != ""
           ? `-${this.newHouse["numberAddition"]}`
           : this.newHouse["numberAddition"];
+
       this.$store
         .dispatch("newHouse", this.newHouse)
         .then((response) => {
           console.log("data sent", response.data);
           if (response.data) {
             this.houseId = response.data.id;
-            console.log("House ID", this.houseId);
             //Sending the image
             this.onUpload();
           }
@@ -318,7 +336,7 @@ export default {
       myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
       var formdata = new FormData();
       formdata.append("image", this.selectedFile);
-      console.log('Same as "response" selectedFile', this.selectedFile);
+
       var requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -335,6 +353,7 @@ export default {
         })
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
+
       //Get data with the new house
       this.$store.dispatch("getHouses");
       setTimeout(() => {
@@ -359,60 +378,6 @@ export default {
 </script>
 
 <style>
-/****************************************************************************************************** */
-
-.button {
-  position: relative;
-  padding: 8px 16px;
-  background: #009579;
-  border: none;
-  outline: none;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.button--disabled {
-  cursor: not-allowed !important;
-  opacity: 0.5 !important;
-}
-
-.button__text {
-  color: #ffffff;
-  transition: all 0.2s;
-}
-
-.button--loading .button__text {
-  visibility: hidden;
-  opacity: 0;
-}
-
-.button--loading::after {
-  content: "";
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  border: 4px solid transparent;
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: button-loading-spinner 1s ease infinite;
-}
-
-@keyframes button-loading-spinner {
-  from {
-    transform: rotate(0turn);
-  }
-
-  to {
-    transform: rotate(1turn);
-  }
-}
-
-/***************************************************************************************** */
 * {
   font-family: "Montserrat";
 }
@@ -672,6 +637,11 @@ select::-ms-expand {
 
 .error-active {
   border: 1px solid #eb5440 !important;
+}
+
+.button--disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
 }
 
 /************* Button animation ****************** */

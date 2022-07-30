@@ -23,12 +23,15 @@
         <input
           type="text"
           v-model="editHouse.houseNumber"
-          @input="showErrorMsg.houseNumber = editHouse.houseNumber === ''"
+          @input="
+            showErrorMsg.houseNumber =
+              editHouse.houseNumber === '' || isNaN(editHouse.houseNumber)
+          "
           :class="showErrorMsg.houseNumber ? 'error-active' : ''"
           placeholder="Enter house number"
         />
         <p class="error-message" v-if="showErrorMsg.houseNumber">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="addition-label">
@@ -93,7 +96,9 @@
             imageURL || editHouse.image
               ? 'upload-image-square-active'
               : 'upload-image-square',
-            imageURL === null || editHouse.image == null ? 'upload-image--error' : '',
+            imageURL === null || editHouse.image == null
+              ? 'upload-image--error'
+              : '',
           ]"
         >
           <img
@@ -124,13 +129,15 @@
       <label for="price">Price*</label><br />
       <input
         type="text"
-        @input="showErrorMsg.price = editHouse.price === ''"
+        @input="
+          showErrorMsg.price = editHouse.price === '' || isNaN(editHouse.price)
+        "
         :class="showErrorMsg.price ? 'error-active' : ''"
         v-model="editHouse.price"
         placeholder="eg. €150.000"
       />
       <p class="error-message" v-if="showErrorMsg.price">
-        Required field missing.
+        Required field missing (number).
       </p>
     </div>
     <div class="size-garage-row">
@@ -138,13 +145,15 @@
         <label for="size">Size*</label><br />
         <input
           type="text"
-          @input="showErrorMsg.size = editHouse.size === ''"
+          @input="
+            showErrorMsg.size = editHouse.size === '' || isNaN(editHouse.size)
+          "
           :class="showErrorMsg.size ? 'error-active' : ''"
           v-model="editHouse.size"
           placeholder="eg. 60m2"
         />
         <p class="error-message" v-if="showErrorMsg.size">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="garage">
@@ -175,12 +184,15 @@
         <input
           type="text"
           v-model="editHouse.bedrooms"
-          @input="showErrorMsg.bedrooms = editHouse.bedrooms === ''"
+          @input="
+            showErrorMsg.bedrooms =
+              editHouse.bedrooms === '' || isNaN(editHouse.bedrooms)
+          "
           :class="showErrorMsg.bedrooms ? 'error-active' : ''"
           placeholder="Enter amount"
         />
         <p class="error-message" v-if="showErrorMsg.bedrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="bathrooms">
@@ -188,12 +200,15 @@
         <input
           type="text"
           v-model="editHouse.bathrooms"
-          @input="showErrorMsg.bathrooms = editHouse.bathrooms === ''"
+          @input="
+            showErrorMsg.bathrooms =
+              editHouse.bathrooms === '' || isNaN(editHouse.bathrooms)
+          "
           :class="showErrorMsg.bathrooms ? 'error-active' : ''"
           placeholder="Enter amount"
         />
         <p class="error-message" v-if="showErrorMsg.bathrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
     </div>
@@ -203,13 +218,16 @@
         type="text"
         v-model="editHouse.constructionYear"
         @input="
-          showErrorMsg.constructionYear = editHouse.constructionYear === ''
+          showErrorMsg.constructionYear =
+            editHouse.constructionYear === '' ||
+            isNaN(editHouse.constructionYear) ||
+            editHouse.constructionYear <= 1901
         "
         :class="showErrorMsg.constructionYear ? 'error-active' : ''"
         placeholder="eg. 1990"
       />
       <p class="error-message" v-if="showErrorMsg.constructionYear">
-        Required field missing.
+        Required field missing (number higer than<strong>1901</strong>).
       </p>
     </div>
     <div class="description">
@@ -232,8 +250,6 @@
       </button>
     </div>
   </form>
-  <pre>{{ this.house.location.street }}</pre>
-  <pre>house id12{{ houseId }} {{ this.house }}</pre>
 </template>
 
 <script>
@@ -275,10 +291,11 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["getHouseById"]),
     dispalyCreatedHouse(id) {
       this.$store.commit("setHouse", id);
     },
-    showErrors: function () {
+    showErrors() {
       let { image, numberAddition, ...allFields } = this.editHouse;
       Object.entries(allFields).map(([key, value]) => {
         this.showErrorMsg[key] = value === "" || value === null;
@@ -286,18 +303,28 @@ export default {
       if ((this.selectedFile === null && image === null) || image === "")
         this.imageURL = null;
     },
+    isDisabled() {
+      let { image, numberAddition, ...allFields } = this.editHouse;
+      let is = Object.entries(allFields).some(
+        ([key, value]) => value === "" || value === null
+      );
+      return is || this.imageURL === null;
+    },
     submitHouse: function () {
       if (this.isDisabled()) {
         this.showErrors();
         return;
       }
-      console.log(this.editHouse);
+
       document.querySelector(".button").classList.add("button--loading");
+
+      //Add '-' in front of 'numberAddition'
       this.editHouse["numberAddition"] =
         this.editHouse["numberAddition"] != ""
           ? `-${this.editHouse["numberAddition"]}`
           : this.editHouse["numberAddition"];
       this.editHouse["id"] = this.houseId;
+
       //Remove letter from input
       if (/[a-zA-Z]/.test(this.editHouse.size)) {
         this.editHouse["size"] = this.editHouse["size"]
@@ -305,6 +332,7 @@ export default {
           .toLowerCase()
           .split("m")[0];
       }
+
       this.$store
         .dispatch("updateHouse", this.editHouse)
         .then((response) => {
@@ -316,20 +344,12 @@ export default {
           console.log(error.message);
         });
     },
-    isDisabled: function () {
-      let { image, numberAddition, ...allFields } = this.editHouse;
-      console.log({ allFields });
-      let is = Object.entries(allFields).some(
-        ([key, value]) => value === "" || value === null
-      );
-      return is || this.imageURL === null;
-    },
+
     async onUpload() {
       let myHeaders = new Headers();
       myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
       var formdata = new FormData();
       formdata.append("image", this.selectedFile);
-      console.log('Same as "response" selectedFile', this.selectedFile);
       var requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -353,19 +373,12 @@ export default {
         document.querySelector(".button").classList.remove("button--loading");
       }, 500);
     },
-
-    placeNumber(str) {
-      var regex = /\d+/g;
-
-      var matches = str.match(regex); // creates array from matches
-      return matches;
-    },
     onfile(event) {
       this.selectedFile = event.target.files[0];
       if (!this.selectedFile) return;
       this.imageURL = URL.createObjectURL(this.selectedFile);
     },
-    ...mapActions(["getHouseById"]),
+
     clearImage: function () {
       this.imageURL = null;
       this.editHouse.image = null;

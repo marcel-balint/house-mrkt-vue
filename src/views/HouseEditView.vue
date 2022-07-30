@@ -33,10 +33,6 @@ export default {
     this.$store.dispatch("getHouseById", this.houseId);
   },
   components: { FormComponentEdit },
-  created() {
-    console.log(this.houseId);
-    this.$store.dispatch("getHouseById", this.houseId);
-  },
 };
 </script>
 

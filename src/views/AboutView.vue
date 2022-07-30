@@ -21,7 +21,10 @@
         <p>
           On the oveview page, where a house is displayed in detail, there are
           recommended houses listed on the right side and the user is able to
-          click and view the overview of the house.
+          click and view the overview of each house. If the user wants to create
+          a new listing or edit his/her listing, he/she must fill all the
+          required form fields otherwise there will be validation error in the
+          form with an appropriate error message.
         </p>
       </div>
       <div class="header-foot">

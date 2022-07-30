@@ -2,10 +2,10 @@
   <div class="container-houses">
     <section class="house-items">
       <ul>
-        <h1 v-if="inputVal" :class="housesFound == 0 ? 'hide' : ''">
-          {{ housesFound }} results found
+        <h1 v-if="inputVal" :class="housesFoundNum == 0 ? 'hide' : ''">
+          {{ housesFoundNum }} results found
         </h1>
-        <div class="noresults-msg" v-if="!housesFound">
+        <div class="noresults-msg" v-if="!housesFoundNum">
           <img
             :src="require('../assets/images/img_empty_houses.png')"
             @click="this.getHouseById(house.id)"
@@ -43,7 +43,7 @@ export default {
         );
       });
     },
-    housesFound() {
+    housesFoundNum() {
       const searchResultsNum = this.filterHouses.length;
       return searchResultsNum;
     },
