@@ -34,7 +34,8 @@
               <span class="size">
                 <img :src="require('../assets/images/ic_size.png')" />{{
                   item.size
-                }}</span
+                }}
+                m2</span
               >
             </p>
           </div>
@@ -138,5 +139,61 @@ a {
 }
 .size {
   display: contents !important;
+}
+
+/*****  Media Queries ****/
+@media (max-width: 1100px) {
+  .house-item {
+    margin-left: 30px;
+  }
+}
+@media (max-width: 1000px) {
+  .house-item-detail-title,
+  .house-item-detail-price,
+  .house-item-detail-address {
+    font-size: 15px;
+  }
+  .house-item-detail-icons span:not(:first-child) {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .house-item {
+    margin-left: 0px;
+  }
+}
+
+@media (max-width: 540px) {
+  .house-item-detail-title,
+  .house-item-detail-address,
+  .house-item-detail-price,
+  .house-item-detail-icons {
+    font-size: 12px;
+  }
+  .house-item {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 380px) {
+  .house-item {
+    height: 110px;
+  }
+  .house-item-img {
+    width: 100px;
+    height: 100px;
+  }
+  .house-item-detail-icons {
+    padding-top: 2px;
+  }
+  .house-item-detail-icons img {
+    margin-right: 3px;
+  }
+  .house-item-detail-price img,
+  .house-item-detail-icons img {
+    width: 15px;
+  }
 }
 </style>

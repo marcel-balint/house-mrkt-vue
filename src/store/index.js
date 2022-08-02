@@ -1,19 +1,11 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
-
 import axios from "axios";
-const apiKey = "GJXtOHyT8QP352l6BZgxY41dmMojFW_N";
-const getDataURL = "https://api.intern.d-tt.nl/api/houses";
-const myHeaders = new Headers();
-myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
 
-const requestOptions = {
-  headers: myHeaders,
-};
-const deleteRequestOptions = {
-  method: "DELETE",
-  headers: myHeaders,
-};
+import { apiKey } from "@/api";
+import { getDataURL } from "@/api";
+import { requestOptions } from "@/api";
+import { deleteRequestOptions } from "@/api";
 
 export default createStore({
   //Keep vuex data on page refresh
@@ -74,7 +66,7 @@ export default createStore({
         })
         .catch((error) => console.log("error", error));
     },
-    //Set a house displayed on <HouseDetailView/> component
+    //Set house displayed on <HouseDetailView/> component
     setHouse(state, house) {
       let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
 

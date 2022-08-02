@@ -2,7 +2,10 @@
   <div class="container-houses">
     <section class="house-items">
       <ul>
-        <h1 v-if="inputVal" :class="housesFoundNum == 0 ? 'hide' : ''">
+        <h1
+          v-if="inputVal"
+          :class="housesFoundNum == 0 ? 'hide' : 'search-results-num'"
+        >
           {{ housesFoundNum }} results found
         </h1>
         <div class="noresults-msg" v-if="!housesFoundNum">
@@ -90,5 +93,51 @@ export default {
 }
 .hide {
   display: none;
+}
+
+/*---    Media Queries   ---*/
+
+@media (max-width: 1300px) {
+  .noresults-msg {
+    margin-top: 17%;
+  }
+  .noresults-msg img {
+    width: 400px;
+  }
+}
+@media (max-width: 1000px) {
+  .noresults-msg {
+    width: 80%;
+    margin: 17% auto;
+  }
+  .noresults-msg img {
+    width: 330px;
+  }
+}
+@media (max-width: 630px) {
+  .container-houses {
+    margin-top: 0px;
+  }
+  .noresults-msg p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 530px) {
+  .container-houses {
+    margin-top: -25px;
+  }
+  .noresults-msg img {
+    width: 240px;
+  }
+  .search-results-num {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 380px) {
+  .container-houses {
+    margin-top: -20px;
+  }
 }
 </style>

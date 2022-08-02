@@ -141,11 +141,13 @@
           type="text"
           v-model.number="newHouse.size"
           placeholder="eg. 60m2"
-          @input="showErrorMsg.size = newHouse.size === ''"
+          @input="
+            showErrorMsg.size = newHouse.size === '' || isNaN(newHouse.size)
+          "
           :class="showErrorMsg.size ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.size">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="garage">
@@ -246,6 +248,8 @@
 </template>
 
 <script>
+import { myHeaders } from "@/api";
+import { getDataURL } from "@/api";
 export default {
   data() {
     return {
@@ -332,22 +336,16 @@ export default {
       this.imageURL = URL.createObjectURL(this.selectedFile);
     },
     async onUpload() {
-      let myHeaders = new Headers();
-      myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
-      var formdata = new FormData();
+      const formdata = new FormData();
       formdata.append("image", this.selectedFile);
 
-      var requestOptions = {
+      const requestOptions = {
         method: "POST",
         headers: myHeaders,
         body: formdata,
         redirect: "follow",
       };
-
-      await fetch(
-        "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
-        requestOptions
-      )
+      await fetch(getDataURL + "/" + this.houseId + "/upload", requestOptions)
         .then((response) => {
           console.log("response", response);
         })
@@ -509,11 +507,13 @@ form input {
 .bathrooms input,
 .size input,
 .garage select,
-.construction-date input {
+.construction-date input,
+.price input {
   margin-top: -10px;
   height: 50px;
   padding: 15px;
   outline: none;
+  border: none;
   border-radius: 10px;
   font-size: 14px;
 }
@@ -531,6 +531,7 @@ form input {
   border-radius: 10px;
   padding: 15px;
   outline: none;
+  width: 100%;
 }
 .price label {
   padding-top: 20px;
@@ -648,7 +649,7 @@ select::-ms-expand {
 .button {
   position: relative;
   padding: 8px 16px;
-  background: #009579;
+  background: #eb5440;
   border: none;
   outline: none;
   border-radius: 2px;
@@ -688,6 +689,133 @@ select::-ms-expand {
 
   to {
     transform: rotate(1turn);
+  }
+}
+
+/*---    Media Queries   ---*/
+@media (max-width: 630px) {
+  .form-create {
+    max-width: 400px;
+    margin: 0 auto;
+    padding-bottom: 100px !important;
+  }
+  .post button {
+    width: 100% !important;
+  }
+  .error-message {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 530px) {
+  .garage span {
+    margin-bottom: -5px;
+  }
+
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: smaller;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .price input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    border-radius: 6px;
+    font-size: 12px !important;
+    height: 45px !important;
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 415px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 165px !important;
+  }
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: 12px;
+  }
+  .garage span {
+    margin-left: 12px;
+  }
+}
+@media (max-width: 376px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 155px !important;
+  }
+  .garage span {
+    margin-left: 21px;
+  }
+}
+@media (max-width: 360px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 141px !important;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    padding: 4px !important;
+  }
+  .garage span {
+    margin-left: 34px;
+  }
+}
+
+@media (max-width: 355px) {
+  .garage {
+    margin-left: -31px;
   }
 }
 </style>

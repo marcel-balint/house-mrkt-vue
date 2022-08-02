@@ -254,6 +254,9 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+
+import { myHeaders } from "@/api";
+import { getDataURL } from "@/api";
 export default {
   data() {
     return {
@@ -317,7 +320,6 @@ export default {
       }
 
       document.querySelector(".button").classList.add("button--loading");
-
       //Add '-' in front of 'numberAddition'
       this.editHouse["numberAddition"] =
         this.editHouse["numberAddition"] != ""
@@ -332,7 +334,6 @@ export default {
           .toLowerCase()
           .split("m")[0];
       }
-
       this.$store
         .dispatch("updateHouse", this.editHouse)
         .then((response) => {
@@ -346,21 +347,16 @@ export default {
     },
 
     async onUpload() {
-      let myHeaders = new Headers();
-      myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
-      var formdata = new FormData();
+      const formdata = new FormData();
       formdata.append("image", this.selectedFile);
-      var requestOptions = {
+
+      const requestOptions = {
         method: "POST",
         headers: myHeaders,
         body: formdata,
         redirect: "follow",
       };
-
-      await fetch(
-        "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
-        requestOptions
-      )
+      await fetch(getDataURL + "/" + this.houseId + "/upload", requestOptions)
         .then((response) => {
           console.log("response", response);
         })
@@ -411,13 +407,12 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 * {
   font-family: "Montserrat";
 }
 .form-create {
   max-width: 370px;
-
   padding-top: 40px;
   padding-bottom: 40px;
 }
@@ -708,6 +703,147 @@ select::-ms-expand {
 
   to {
     transform: rotate(1turn);
+  }
+}
+
+/*---    Media Queries   ---*/
+@media (max-width: 630px) {
+  .form-create {
+    max-width: 400px;
+    margin: 0 auto;
+    padding-bottom: 100px !important;
+  }
+  .post button {
+    width: 100% !important;
+  }
+  .error-message {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 530px) {
+  .upload-image-square {
+    width: 130px;
+    height: 135px;
+  }
+  .uploaded-image {
+    max-width: 130px;
+    max-height: 135px;
+  }
+  .clear-img-active {
+    left: 110px;
+  }
+  .price label {
+    padding-top: 0px;
+  }
+  .garage span {
+    margin-bottom: -5px;
+  }
+
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: smaller;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .price input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    border-radius: 6px;
+    font-size: 12px !important;
+    height: 45px !important;
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 415px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 165px !important;
+  }
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: 12px;
+  }
+  .garage span {
+    margin-left: 12px;
+  }
+}
+@media (max-width: 376px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 155px !important;
+  }
+  .garage span {
+    margin-left: 21px;
+  }
+}
+@media (max-width: 360px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 141px !important;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    padding: 4px !important;
+  }
+  .garage span {
+    margin-left: 34px;
+  }
+}
+
+@media (max-width: 355px) {
+  .garage {
+    margin-left: -31px;
   }
 }
 </style>
