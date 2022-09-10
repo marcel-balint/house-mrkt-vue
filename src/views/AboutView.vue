@@ -27,24 +27,19 @@
           required form fields otherwise there will be validation error in the
           form with an appropriate error message.
         </p>
-        <p>
-          About me : I'm passionate about learning the latest and greatest
-          technologies. Interested in new programming technologies, and
-          continuous self improvement.
-        </p>
       </div>
       <div class="header-foot">
         <h2>Design and Development</h2>
         <div class="content-foot">
           <img
             class="image-foot"
-            :src="require('../assets/images/logo_dtt.png')"
+            :src="require('../assets/images/ic_mobile_home_active.png')"
           />
           <p>
-            By DTT
+            By Marcel
             <span>
-              <a href="https://www.d-tt.nl/en/" target="_blank"
-                >www.d-tt.nl</a
+              <a href="https://github.com/marcel-balint" target="_blank"
+                >www.github.com</a
               ></span
             >
           </p>

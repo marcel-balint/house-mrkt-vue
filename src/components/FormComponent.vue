@@ -241,7 +241,7 @@
 
     <div class="post">
       <button :class="['button', isDisabled() ? 'button--disabled' : '']">
-        <span class="button__text">Post</span>
+        <span class="button-text">Post</span>
       </button>
     </div>
   </form>
@@ -531,6 +531,7 @@ form input {
   border-radius: 10px;
   padding: 15px;
   outline: none;
+  border: none;
   width: 100%;
 }
 .price label {

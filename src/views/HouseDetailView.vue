@@ -174,7 +174,7 @@ export default {
       windowWidth: window.innerWidth,
     };
   },
-  props: ["houseId"],
+  // props: ["houseId"],
 
   methods: {
     formatNumber,

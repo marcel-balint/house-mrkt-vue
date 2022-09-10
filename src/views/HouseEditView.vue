@@ -2,16 +2,6 @@
   <div class="container-create">
     <div class="container-create-body">
       <div class="back-icon">
-        <!--
-        <span>
-          <router-link :to="`/house/view/${house.id}`">
-            <img
-              :src="
-                require('../assets/images/ic_back_grey.png')
-              " /></router-link
-          >Back to detail page</span
-        >
-        -->
         <div class="back-link">
           <router-link :to="`/house/view/${house.id}`">
             <img

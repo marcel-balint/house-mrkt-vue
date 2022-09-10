@@ -16,7 +16,6 @@ export default createStore({
   ],
   state: {
     houses: [],
-
     house: null,
     recommendations: null,
     inputCharacter: "",
@@ -145,10 +144,18 @@ export default createStore({
         if (house.id === houseId) {
           //Split the 'street' string and assign new values for street_name,
           //house_number and numberAddition properties
-          let splittedStreet = house.location.street.split(" ");
-          let houseInfo = splittedStreet.pop();
+          let splittedStreet = house.location.street.split(" "); //array
+          console.log("spitterStrret", splittedStreet);
+          let houseInfo = splittedStreet.pop(); // poped the last one
+          console.log("houseInfo before after pop", houseInfo);
           let street_name = splittedStreet.join(" ");
+          console.log("street_name", street_name);
+          //remove the '-'
           let splittedHouseInfo = houseInfo.split(/-(.*)/s);
+          console.log(
+            "Splitted house ( houseInfo.split(/-(.*)/s)  )",
+            splittedHouseInfo
+          );
 
           let [house_number, numberAddition] = ["", ""];
           if (splittedHouseInfo.length > 1) {
@@ -156,7 +163,7 @@ export default createStore({
           } else {
             house_number = splittedHouseInfo[0];
           }
-
+          //remove the white space trim()
           street_name = street_name.trim();
           house_number = house_number.trim();
           numberAddition = numberAddition.trim();

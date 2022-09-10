@@ -246,7 +246,7 @@
     </div>
     <div class="post">
       <button :class="['button', isDisabled() ? 'button--disabled' : '']">
-        Post
+        <span class="button-text">Save</span>
       </button>
     </div>
   </form>
