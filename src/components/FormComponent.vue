@@ -10,7 +10,7 @@
         type="text"
         v-model="newHouse.streetName"
         placeholder="Enter the street name"
-        @blur="streetNameIsValid"
+        @input="showErrorMsg.streetName = newHouse.streetName === ''"
         :class="showErrorMsg.streetName ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.streetName">
@@ -24,13 +24,14 @@
           type="text"
           v-model.number="newHouse.houseNumber"
           placeholder="Enter house number"
-          @blur="houseNumberIsValid"
-          @keydown="formIsValid"
-          @keyup="formIsValid"
+          @input="
+            showErrorMsg.houseNumber =
+              newHouse.houseNumber === '' || isNaN(newHouse.houseNumber)
+          "
           :class="showErrorMsg.houseNumber ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.houseNumber">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="addition-label">
@@ -49,9 +50,7 @@
         type="text"
         v-model="newHouse.zip"
         placeholder="Eg. 1000 AA"
-        @blur="zipIsValid"
-        @keydown="formIsValid"
-        @keyup="formIsValid"
+        @input="showErrorMsg.zip = newHouse.zip === ''"
         :class="showErrorMsg.zip ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.zip">
@@ -65,9 +64,7 @@
         type="text"
         v-model="newHouse.city"
         placeholder="Eg. Utrecht"
-        @blur="cityIsValid"
-        @keydown="formIsValid"
-        @keyup="formIsValid"
+        @input="showErrorMsg.city = newHouse.city === ''"
         :class="showErrorMsg.city ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.city">
@@ -92,9 +89,10 @@
       >
         <span
           class="upload-image-square"
-          :class="
-            imageURL ? 'upload-image-square-active' : 'upload-image-square'
-          "
+          :class="[
+            imageURL ? 'upload-image-square-active' : 'upload-image-square',
+            imageURL === null ? 'upload-image--error' : '',
+          ]"
         >
           <img
             class="uploaded-image"
@@ -116,7 +114,7 @@
           <br />
         </span>
       </label>
-      <p class="error-message" v-if="showErrorMsg.image">
+      <p class="error-message mt-0" v-if="imageURL === null">
         Required field missing.
       </p>
     </div>
@@ -127,13 +125,13 @@
         type="text"
         v-model.number="newHouse.price"
         placeholder="eg. €150.000"
-        @blur="priceIsValid"
-        @keydown="formIsValid"
-        @keyup="formIsValid"
+        @input="
+          showErrorMsg.price = newHouse.price === '' || isNaN(newHouse.price)
+        "
         :class="showErrorMsg.price ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.price">
-        Required field missing.
+        Required field missing (number).
       </p>
     </div>
     <div class="size-garage-row">
@@ -143,13 +141,13 @@
           type="text"
           v-model.number="newHouse.size"
           placeholder="eg. 60m2"
-          @blur="sizeIsValid"
-          @keydown="formIsValid"
-          @keyup="formIsValid"
+          @input="
+            showErrorMsg.size = newHouse.size === '' || isNaN(newHouse.size)
+          "
           :class="showErrorMsg.size ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.size">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="garage">
@@ -160,9 +158,7 @@
               name="garage"
               v-model="newHouse.hasGarage"
               class="garage-select"
-              @blur="hasGarageIsValid"
-              @keydown="formIsValid"
-              @keyup="formIsValid"
+              @change="showErrorMsg.hasGarage = newHouse.hasGarage === ''"
               :class="showErrorMsg.hasGarage ? 'error-active' : ''"
             >
               <option value="" selected disabled hidden>Select</option>
@@ -183,13 +179,14 @@
           type="text"
           v-model.number="newHouse.bedrooms"
           placeholder="Enter amount"
-          @blur="bedroomsIsValid"
-          @keydown="formIsValid"
-          @keyup="formIsValid"
+          @input="
+            showErrorMsg.bedrooms =
+              newHouse.bedrooms === '' || isNaN(newHouse.bedrooms)
+          "
           :class="showErrorMsg.bedrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bedrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
       <div class="bathrooms">
@@ -198,13 +195,14 @@
           type="text"
           v-model.number="newHouse.bathrooms"
           placeholder="Enter amount"
-          @blur="bathroomsIsValid"
-          @keydown="formIsValid"
-          @keyup="formIsValid"
+          @input="
+            showErrorMsg.bathrooms =
+              newHouse.bathrooms === '' || isNaN(newHouse.bathrooms)
+          "
           :class="showErrorMsg.bathrooms ? 'error-active' : ''"
         />
         <p class="error-message" v-if="showErrorMsg.bathrooms">
-          Required field missing.
+          Required field missing (number).
         </p>
       </div>
     </div>
@@ -214,13 +212,16 @@
         type="text"
         v-model.number="newHouse.constructionYear"
         placeholder="eg. 1990"
-        @blur="constructionYearIsValid"
-        @keydown="formIsValid"
-        @keyup="formIsValid"
+        @input="
+          showErrorMsg.constructionYear =
+            newHouse.constructionYear === '' ||
+            isNaN(newHouse.constructionYear) ||
+            newHouse.constructionYear <= 1901
+        "
         :class="showErrorMsg.constructionYear ? 'error-active' : ''"
       />
       <p class="error-message" v-if="showErrorMsg.constructionYear">
-        Required field missing.
+        Required field missing (number higer than<strong> 1901 </strong>).
       </p>
     </div>
     <div class="description">
@@ -230,8 +231,7 @@
         rows="4"
         cols="44"
         placeholder="Enter description"
-        @blur="descriptionIsValid"
-        @keyup="formIsValid"
+        @input="showErrorMsg.description = newHouse.description === ''"
         :class="showErrorMsg.description ? 'error-active' : ''"
       ></textarea>
       <p class="error-message" v-if="showErrorMsg.description">
@@ -240,25 +240,7 @@
     </div>
 
     <div class="post">
-      <button
-        class="button"
-        :class="formValid ? 'active-btn' : ''"
-        @click="
-          selectedFileIsValid();
-          formIsValid();
-          streetNameIsValid();
-          houseNumberIsValid();
-          zipIsValid();
-          cityIsValid();
-          priceIsValid();
-          sizeIsValid();
-          hasGarageIsValid();
-          bedroomsIsValid();
-          bathroomsIsValid();
-          constructionYearIsValid();
-          descriptionIsValid();
-        "
-      >
+      <button :class="['button', isDisabled() ? 'button--disabled' : '']">
         <span class="button-text">Post</span>
       </button>
     </div>
@@ -266,6 +248,8 @@
 </template>
 
 <script>
+import { myHeaders } from "@/api";
+import { getDataURL } from "@/api";
 export default {
   data() {
     return {
@@ -305,151 +289,69 @@ export default {
     };
   },
   methods: {
-    streetNameIsValid() {
-      return !!this.newHouse.streetName && isNaN(this.newHouse.streetName)
-        ? (this.showErrorMsg.streetName = false)
-        : (this.showErrorMsg.streetName = true);
+    showErrors() {
+      let { ...allFields } = this.newHouse;
+      //Check for empty form field and attach the error message, if is true
+      Object.entries(allFields).map(([key, value]) => {
+        this.showErrorMsg[key] = value === "" || value === null;
+      });
+      if (this.selectedFile === null) this.imageURL = null;
     },
-
-    houseNumberIsValid() {
-      return typeof this.newHouse.houseNumber === "number"
-        ? (this.showErrorMsg.houseNumber = false)
-        : (this.showErrorMsg.houseNumber = true);
-    },
-    zipIsValid() {
-      return this.newHouse.zip
-        ? (this.showErrorMsg.zip = false)
-        : (this.showErrorMsg.zip = true);
-    },
-    cityIsValid() {
-      return !!this.newHouse.city && isNaN(this.newHouse.city)
-        ? (this.showErrorMsg.city = false)
-        : (this.showErrorMsg.city = true);
-    },
-    selectedFileIsValid() {
-      return this.selectedFile === null
-        ? (this.showErrorMsg.image = true)
-        : (this.showErrorMsg.image = false);
-    },
-    priceIsValid() {
-      return typeof this.newHouse.price === "number"
-        ? (this.showErrorMsg.price = false)
-        : (this.showErrorMsg.price = true);
-    },
-    sizeIsValid() {
-      return typeof this.newHouse.size === "number"
-        ? (this.showErrorMsg.size = false)
-        : (this.showErrorMsg.size = true);
-    },
-    hasGarageIsValid() {
-      return this.newHouse.hasGarage == "true" ||
-        this.newHouse.hasGarage == "false"
-        ? (this.showErrorMsg.hasGarage = false)
-        : (this.showErrorMsg.hasGarage = true);
-    },
-    bedroomsIsValid() {
-      return typeof this.newHouse.bedrooms === "number"
-        ? (this.showErrorMsg.bedrooms = false)
-        : (this.showErrorMsg.bedrooms = true);
-    },
-    bathroomsIsValid() {
-      return typeof this.newHouse.bathrooms === "number"
-        ? (this.showErrorMsg.bathrooms = false)
-        : (this.showErrorMsg.bathrooms = true);
-    },
-    constructionYearIsValid() {
-      return typeof this.newHouse.constructionYear === "number"
-        ? (this.showErrorMsg.constructionYear = false)
-        : (this.showErrorMsg.constructionYear = true);
-    },
-    descriptionIsValid() {
-      return !!this.newHouse.description && isNaN(this.newHouse.description)
-        ? (this.showErrorMsg.description = false)
-        : (this.showErrorMsg.description = true);
-    },
-    formIsValid() {
-      const errors = this.newHouse;
-      /*  console.log(this.showErrorMsg);
-      console.log("IS VALID", this.formValid);
-
-      return Object.values(errors).includes(true)
-        ? (this.formValid = false)
-        : (this.formValid = true);
-*/
-      for (let [value] of Object.entries(errors)) {
-        if (value !== "") {
-          this.formValid = true;
-        } else {
-          this.formValid = false;
-        }
-      }
+    isDisabled() {
+      let { image, numberAddition, ...allFields } = this.newHouse;
+      return (
+        Object.entries(allFields).some(([key, value]) => value === "") ||
+        this.selectedFile === null
+      );
     },
     submitHouse() {
-      if (this.formValid) {
-        document.querySelector(".button").classList.add("button--loading");
-        // Add '-' before numberAddition, if exists
-        this.newHouse["numberAddition"] =
-          this.newHouse["numberAddition"] != ""
-            ? `-${this.newHouse["numberAddition"]}`
-            : this.newHouse["numberAddition"];
-
-        //Remove letter 'm' from input
-        if (/[a-zA-Z]/.test(this.newHouse.size)) {
-          this.newHouse["size"] = this.newHouse["size"]
-            .toString()
-            .toLowerCase()
-            .split("m")[0];
-        }
-        //Send form values
-        this.$store
-          .dispatch("newHouse", this.newHouse)
-          .then((response) => {
-            console.log("data sent", response.data);
-            if (response.data) {
-              this.houseId = response.data.id;
-              console.log("House ID", this.houseId);
-              //Sending the image
-              this.onUpload();
-            }
-          })
-          .catch((error) => {
-            console.log(error.message);
-          });
-      } else {
-        console.log("FORM IS NOT VALID");
+      if (this.isDisabled()) {
+        this.showErrors();
+        return;
       }
+      document.querySelector(".button").classList.add("button--loading");
+      //Add '-' in front of 'numberAddition'
+      this.newHouse["numberAddition"] =
+        this.newHouse["numberAddition"] != ""
+          ? `-${this.newHouse["numberAddition"]}`
+          : this.newHouse["numberAddition"];
+
+      this.$store
+        .dispatch("newHouse", this.newHouse)
+        .then((response) => {
+          console.log("data sent", response.data);
+          if (response.data) {
+            this.houseId = response.data.id;
+            //Sending the image
+            this.onUpload();
+          }
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
     },
     onfile(event) {
       this.selectedFile = event.target.files[0];
       if (!this.selectedFile) return;
       this.imageURL = URL.createObjectURL(this.selectedFile);
-
-      this.selectedFile
-        ? (this.showErrorMsg.image = false)
-        : (this.showErrorMsg.image = true);
     },
     async onUpload() {
-      let myHeaders = new Headers();
-      myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
-      var formdata = new FormData();
+      const formdata = new FormData();
       formdata.append("image", this.selectedFile);
-      console.log('Same as "response" selectedFile', this.selectedFile);
-      var requestOptions = {
+
+      const requestOptions = {
         method: "POST",
         headers: myHeaders,
         body: formdata,
         redirect: "follow",
       };
-
-      await fetch(
-        "https://api.intern.d-tt.nl/api/houses/" + this.houseId + "/upload",
-        requestOptions
-      )
+      await fetch(getDataURL + "/" + this.houseId + "/upload", requestOptions)
         .then((response) => {
           console.log("response", response);
         })
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
+
       //Get data with the new house
       this.$store.dispatch("getHouses");
       setTimeout(() => {
@@ -463,6 +365,7 @@ export default {
     },
     clearImage() {
       this.imageURL = null;
+      this.imagePresent = false;
       this.selectedFile = null;
 
       //clear the previous value
@@ -472,9 +375,7 @@ export default {
 };
 </script>
 
-<style scoped>
-/********* Montserrat Medium Italic font */
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@1,500&display=swap");
+<style>
 * {
   font-family: "Montserrat";
 }
@@ -572,13 +473,16 @@ form input {
   display: none;
 }
 
-.upload-image-box p {
+.upload-image-box p:first-child {
   padding-top: 15px;
   padding-bottom: 15px;
 }
 
 .upload-image-box {
   position: relative;
+}
+.upload-image--error {
+  border-color: #eb5440 !important;
 }
 .clear-img {
   position: absolute;
@@ -603,11 +507,13 @@ form input {
 .bathrooms input,
 .size input,
 .garage select,
-.construction-date input {
+.construction-date input,
+.price input {
   margin-top: -10px;
   height: 50px;
   padding: 15px;
   outline: none;
+  border: none;
   border-radius: 10px;
   font-size: 14px;
 }
@@ -625,6 +531,8 @@ form input {
   border-radius: 10px;
   padding: 15px;
   outline: none;
+  border: none;
+  width: 100%;
 }
 .price label {
   padding-top: 20px;
@@ -712,13 +620,6 @@ select::-ms-expand {
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
-  background-color: #eb5440;
-  opacity: 0.4;
-}
-/**** override previous styles ***/
-.active-btn {
-  background-color: #ff1d00 !important;
-  opacity: 1 !important;
 }
 .bg-img-height {
   height: 102px;
@@ -733,17 +634,23 @@ select::-ms-expand {
   font-style: italic;
   color: #eb5440;
   font-size: 14px;
+  margin-top: 10px;
 }
 
 .error-active {
-  border: 1px solid #eb5440;
+  border: 1px solid #eb5440 !important;
+}
+
+.button--disabled {
+  cursor: not-allowed !important;
+  opacity: 0.5 !important;
 }
 
 /************* Button animation ****************** */
 .button {
   position: relative;
   padding: 8px 16px;
-  background: #009579;
+  background: #eb5440;
   border: none;
   outline: none;
   border-radius: 2px;
@@ -783,6 +690,133 @@ select::-ms-expand {
 
   to {
     transform: rotate(1turn);
+  }
+}
+
+/*---    Media Queries   ---*/
+@media (max-width: 630px) {
+  .form-create {
+    max-width: 400px;
+    margin: 0 auto;
+    padding-bottom: 100px !important;
+  }
+  .post button {
+    width: 100% !important;
+  }
+  .error-message {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+}
+
+@media (max-width: 530px) {
+  .garage span {
+    margin-bottom: -5px;
+  }
+
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: smaller;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .price input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    border-radius: 6px;
+    font-size: 12px !important;
+    height: 45px !important;
+    padding: 8px !important;
+  }
+}
+
+@media (max-width: 415px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 165px !important;
+  }
+  .street-name,
+  .house-number-label,
+  .addition-label,
+  .post-code,
+  .city,
+  .upload-image-box,
+  .price,
+  .size,
+  .garage,
+  .bedrooms,
+  .bathrooms,
+  .construction-date,
+  .description {
+    font-size: 12px;
+  }
+  .garage span {
+    margin-left: 12px;
+  }
+}
+@media (max-width: 376px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 155px !important;
+  }
+  .garage span {
+    margin-left: 21px;
+  }
+}
+@media (max-width: 360px) {
+  .house-number-label input,
+  .addition-label input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select {
+    width: 141px !important;
+  }
+  .street-name input,
+  .house-number-label input,
+  .addition-label input,
+  .post-code input,
+  .city input,
+  .bedrooms input,
+  .bathrooms input,
+  .size input,
+  .garage select,
+  .construction-date input {
+    padding: 4px !important;
+  }
+  .garage span {
+    margin-left: 34px;
+  }
+}
+
+@media (max-width: 355px) {
+  .garage {
+    margin-left: -31px;
   }
 }
 </style>

@@ -3,13 +3,32 @@
     <div class="conatiner-house-view">
       <main class="house-detail">
         <div class="back-icon">
-          <span>
+          <div class="link">
             <router-link to="/">
               <img
-                :src="require('../assets/images/ic_back_grey.png')"
+                :src="
+                  windowWidth > 630
+                    ? require('@/assets/images/' + icons[0])
+                    : require('@/assets/images/' + icons[1])
+                "
                 alt="back" /></router-link
-            >Back to overwiev</span
-          >
+            >{{ windowWidth > 630 ? "Back to overview " : "" }}
+          </div>
+        </div>
+        <div
+          class="mobile-icons-top"
+          v-if="getHouse.madeByMe && windowWidth < 630"
+        >
+          <span class="edit-mobile"
+            ><router-link :to="`/house/edit/${getHouse.id}`"
+              ><img
+                src="../assets/images/ic_edit_white.png"
+                @click="this.getHouseById(getHouse.id)"
+                alt="edit" /></router-link
+          ></span>
+          <span class="delete-mobile" @click="this.toggleModal"
+            ><img src="../assets/images/ic_delete_white.png" alt="delete"
+          /></span>
         </div>
         <div class="house-detail-body">
           <div class="house-detail-image">
@@ -24,18 +43,19 @@
                 {{ getHouse.location.street.replace("-", "") }}
               </h1>
 
-              <div class="house-detail-change" v-if="getHouse.madeByMe">
+              <div
+                class="house-detail-change"
+                v-if="getHouse.madeByMe && windowWidth > 630"
+              >
                 <span class="edit"
                   ><router-link :to="`/house/edit/${getHouse.id}`"
                     ><img
-                      :src="require('../assets/images/ic_edit.png')"
+                      src="../assets/images/ic_edit.png"
                       @click="this.getHouseById(getHouse.id)"
                       alt="edit" /></router-link
                 ></span>
-                <span class="delete cursor-pointer" @click="this.toggleModal"
-                  ><img
-                    :src="require('../assets/images/ic_delete.png')"
-                    alt="delete"
+                <span class="delete" @click="this.toggleModal"
+                  ><img src="../assets/images/ic_delete.png" alt="delete"
                 /></span>
               </div>
             </div>
@@ -109,7 +129,7 @@
               <button
                 type="button"
                 class="delete-btn"
-                @click="this.deleteHouse(getHouse.id)"
+                @click="this.delete(getHouse.id)"
               >
                 Yes, delete
               </button>
@@ -143,19 +163,30 @@ export default {
   data() {
     return {
       showModal: false,
+      icons: [
+        "ic_back_grey.png",
+        "ic_back_white.png",
+        "ic_edit.png",
+        "ic_edit_white.png",
+        "ic_delete.png",
+        "ic_delete_white.png",
+      ],
+      windowWidth: window.innerWidth,
     };
   },
-  props: ["houseId"],
+  // props: ["houseId"],
 
   methods: {
     formatNumber,
-    deleteHouse(id) {
-      this.$store.commit("delete", id);
-    },
     toggleModal() {
       this.showModal = !this.showModal;
     },
-    ...mapActions(["getHouseById"]),
+
+    onResize() {
+      this.windowWidth = window.innerWidth;
+    },
+
+    ...mapActions(["getHouseById", "delete"]),
   },
   computed: {
     ...mapGetters({
@@ -165,6 +196,11 @@ export default {
   },
   created() {
     this.$store.dispatch("setRecommendations");
+  },
+  mounted() {
+    this.$nextTick(() => {
+      window.addEventListener("resize", this.onResize);
+    });
   },
   components: { RecommendedHousesComponent },
 };
@@ -196,7 +232,7 @@ export default {
 .back-icon {
   display: flex;
 }
-.back-icon span {
+.back-icon .link {
   display: flex;
   flex-direction: row;
   font-size: 16px;
@@ -232,6 +268,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 23px;
 }
 
 .house-detail-image img {
@@ -300,7 +337,7 @@ export default {
   margin-top: 48px;
 }
 
-/********  Modal ******************** */
+/********  Modal ************ */
 .modal {
   position: fixed;
   left: 0;
@@ -373,5 +410,255 @@ export default {
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
+}
+
+/*---    Media Queries   ---*/
+
+@media (max-width: 1300px) {
+  .conatiner-house-view {
+    gap: 40px;
+  }
+}
+@media (max-width: 1250px) {
+  .conatiner-house-view {
+    width: 80%;
+  }
+}
+@media (max-width: 1100px) {
+  .conatiner-house-view {
+    gap: 20px;
+  }
+  .aside {
+    width: 365px;
+  }
+  .recomandations-title,
+  .house-title {
+    font-size: 23px;
+  }
+  .recomandations-title {
+    margin-left: 30px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .aside {
+    width: 325px;
+  }
+}
+
+@media (max-width: 900px) {
+  .conatiner-house-view {
+    flex-direction: column;
+  }
+  .house-title {
+    font-size: 20px;
+  }
+  .house-description-text {
+    font-size: 16px;
+  }
+  .aside {
+    width: auto;
+    margin-top: 0px;
+  }
+  .recomandations-title {
+    margin-left: 0px;
+    font-size: 20px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 894px) {
+  .modal-content {
+    max-width: 75%;
+    max-height: 370px;
+  }
+  .modal-content h1 {
+    font-size: 25px;
+  }
+  .para {
+    font-size: 18px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    width: 330px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 680px) {
+  .modal-content {
+    max-height: 370px;
+  }
+  .modal-content p {
+    font-size: 16px;
+  }
+  .modal-text {
+    width: 75%;
+  }
+  .modal-content h1 {
+    font-size: 21px;
+  }
+  .para {
+    font-size: 18px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    width: 290px;
+  }
+}
+
+@media (max-width: 630px) {
+  .container {
+    margin-bottom: 100px;
+  }
+  .conatiner-house-view {
+    width: 100%;
+    align-items: center;
+  }
+  .house-detail {
+    margin-top: 0px;
+  }
+  .house-detail-body {
+    margin-top: 0px;
+  }
+  .aside {
+    width: 80%;
+  }
+  .recomandations-title {
+    text-align: left;
+  }
+  .back-icon img {
+    position: absolute;
+    top: 60px;
+    left: 30px;
+    z-index: 1;
+  }
+  .mobile-icons-top {
+    position: absolute;
+    z-index: 1;
+    right: 30px;
+    top: 60px;
+    display: flex;
+    gap: 30px;
+  }
+  .edit-mobile img {
+    width: 23px;
+  }
+  .delete-mobile img {
+    width: 16px;
+  }
+  .house-detail-image {
+    position: relative;
+  }
+  .house-detail-description {
+    position: relative;
+    margin-top: -30px;
+    border-top-right-radius: 25px;
+    border-top-left-radius: 25px;
+  }
+  .modal-content {
+    height: 320px;
+  }
+  .modal-content h1 {
+    font-size: 19px;
+  }
+  .modal-content p {
+    font-size: 12px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    font-size: 12px;
+    width: 230px;
+  }
+  .delete-btn,
+  .cancel-btn {
+    height: 45px;
+  }
+  .para {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 540px) {
+  .aside {
+    width: 85%;
+  }
+  .mobile-icons-top,
+  .back-icon img {
+    top: 40px;
+  }
+}
+@media (max-width: 540px) {
+  .container {
+    padding-bottom: 20px;
+  }
+  .aside {
+    width: 90%;
+  }
+  .house-title {
+    font-size: 18px;
+  }
+  .back-icon img {
+    width: 19px;
+  }
+  .edit-mobile img {
+    width: 20px;
+  }
+  .delete-mobile img {
+    width: 14px;
+  }
+  .mobile-icons-top,
+  .back-icon img {
+    top: 30px;
+  }
+  .house-detail-description {
+    padding: 20px;
+  }
+  .house-description-text,
+  .house-detail-description p {
+    font-size: 12px;
+    align-items: center;
+  }
+  .house-description-text {
+    padding-top: 17px;
+  }
+  .middle-row > * {
+    margin-right: 15px;
+  }
+  .recomandations-title {
+    margin-top: 5px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 477px) {
+  .modal-content {
+    max-width: 90%;
+    height: 270px;
+  }
+  .modal-text {
+    width: 80%;
+  }
+  .modal-btns {
+    align-items: center;
+    width: 229px;
+  }
+  .cancel-btn,
+  .delete-btn {
+    height: 35px;
+    width: 175px;
+    border-radius: 7px;
+  }
+}
+@media (max-width: 380px) {
+  .house-detail-description p {
+    margin-top: 10px;
+  }
+  .modal-text {
+    width: 100%;
+  }
 }
 </style>

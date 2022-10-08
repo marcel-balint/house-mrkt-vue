@@ -210,7 +210,7 @@ a {
   z-index: 5;
 }
 
-/********  Modal ******************** */
+/**************  Modal ************* */
 .modal {
   position: fixed;
   left: 0;
@@ -283,5 +283,194 @@ a {
   font-weight: 600;
   border-radius: 10px;
   cursor: pointer;
+}
+
+/*---    Media Queries   ---*/
+@media (max-width: 1300px) {
+  .house-item {
+    height: 180px;
+  }
+  .house-item-img {
+    width: 170px;
+    height: 170px;
+  }
+  .house-item-img img {
+    top: 53%;
+    left: 53%;
+  }
+  .item-edit img,
+  .item-delete img {
+    width: 21px;
+  }
+}
+
+@media (max-width: 894px) {
+  .modal-content {
+    max-width: 75%;
+    max-height: 370px;
+  }
+  .modal-content h1 {
+    font-size: 25px;
+  }
+  .para {
+    font-size: 18px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    width: 330px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 730px) {
+  .house-item {
+    height: 160px;
+  }
+  .house-item-img {
+    height: 150px;
+    width: 150px;
+  }
+  .house-item-detail-icons img {
+    height: 15px;
+    width: 15px;
+  }
+  .house-item-detail-icons span {
+    font-size: 15px;
+  }
+  .item-edit img,
+  .item-delete img {
+    width: 17px;
+    height: 19px;
+  }
+}
+
+@media (max-width: 680px) {
+  .modal-content {
+    max-height: 370px;
+  }
+  .modal-content p {
+    font-size: 16px;
+  }
+  .modal-text {
+    width: 75%;
+  }
+  .modal-content h1 {
+    font-size: 21px;
+  }
+  .para {
+    font-size: 18px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    width: 290px;
+  }
+}
+
+@media (max-width: 633px) {
+  .modal-content {
+    height: 320px;
+  }
+  .modal-content h1 {
+    font-size: 19px;
+  }
+  .modal-content p {
+    font-size: 12px;
+  }
+  .modal-btns,
+  .delete-btn,
+  .cancel-btn {
+    font-size: 12px;
+    width: 230px;
+  }
+  .delete-btn,
+  .cancel-btn {
+    height: 45px;
+  }
+  .para {
+    margin-top: 16px;
+  }
+}
+
+@media (max-width: 530px) {
+  .house-item {
+    border-radius: 7px;
+    height: 130px;
+  }
+  .house-item-img {
+    height: 120px;
+    width: 120px;
+  }
+
+  .house-item-detail-title,
+  .house-item-detail-price,
+  .house-item-detail-address,
+  .house-item-detail-icons span {
+    font-size: 12px;
+  }
+  .house-item-edit {
+    margin-top: 15px;
+    margin-right: 15px;
+  }
+  .item-edit img,
+  .item-delete img {
+    width: 15px;
+    height: 17px;
+  }
+}
+
+@media (max-width: 477px) {
+  .modal-content {
+    max-width: 90%;
+    height: 270px;
+  }
+  .modal-text {
+    width: 80%;
+  }
+  .modal-btns {
+    align-items: center;
+    width: 229px;
+  }
+  .cancel-btn,
+  .delete-btn {
+    height: 35px;
+    width: 175px;
+    border-radius: 7px;
+  }
+}
+
+@media (max-width: 380px) {
+  .house-item {
+    height: 100px;
+  }
+  ul li {
+    margin-top: 15px;
+  }
+  .house-item-img {
+    height: 90px;
+    width: 90px;
+  }
+  .house-item-edit {
+    margin-top: 10px;
+    margin-right: 10px;
+  }
+  .item-delete {
+    margin-left: 10px;
+  }
+  .house-item-detail {
+    padding-top: 7px;
+    padding-left: 5px;
+    padding-bottom: 0px;
+  }
+  .house-item-detail-price img {
+    width: 15px;
+  }
+  .house-item-detail-icons img {
+    margin-right: 5px;
+  }
+  .modal-text {
+    width: 100%;
+  }
 }
 </style>

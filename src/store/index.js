@@ -1,19 +1,11 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
-
 import axios from "axios";
 
-const getDataURL = "https://api.intern.d-tt.nl/api/houses";
-const myHeaders = new Headers();
-myHeaders.append("X-Api-Key", "GJXtOHyT8QP352l6BZgxY41dmMojFW_N");
-
-const requestOptions = {
-  headers: myHeaders,
-};
-const deleteRequestOptions = {
-  method: "DELETE",
-  headers: myHeaders,
-};
+import { apiKey } from "@/api";
+import { getDataURL } from "@/api";
+import { requestOptions } from "@/api";
+import { deleteRequestOptions } from "@/api";
 
 export default createStore({
   //Keep vuex data on page refresh
@@ -24,7 +16,6 @@ export default createStore({
   ],
   state: {
     houses: [],
-
     house: null,
     recommendations: null,
     inputCharacter: "",
@@ -71,15 +62,13 @@ export default createStore({
         .then((result) => {
           window.location.href = "/";
           console.log(dispatch, "response", result);
-          console.log(result);
         })
         .catch((error) => console.log("error", error));
     },
-    //Set a house displayed on <HouseDetailView/> component
+    //Set house displayed on <HouseDetailView/> component
     setHouse(state, house) {
-      console.log({ house });
       let newHouse = state.houses.find((el) => Number(el.id) === Number(house));
-      console.log({ newHouse });
+
       //clear the current house
       if (state.house) {
         state.house = null;
@@ -131,7 +120,7 @@ export default createStore({
         method: "POST",
         url: getDataURL,
         headers: {
-          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+          "X-Api-Key": apiKey,
         },
         data,
       });
@@ -143,7 +132,7 @@ export default createStore({
         method: "POST",
         url: getDataURL + "/" + data.id,
         headers: {
-          "X-Api-Key": "GJXtOHyT8QP352l6BZgxY41dmMojFW_N",
+          "X-Api-Key": apiKey,
         },
         data,
       });
@@ -155,10 +144,18 @@ export default createStore({
         if (house.id === houseId) {
           //Split the 'street' string and assign new values for street_name,
           //house_number and numberAddition properties
-          let splittedStreet = house.location.street.split(" ");
-          let houseInfo = splittedStreet.pop();
+          let splittedStreet = house.location.street.split(" "); //array
+          console.log("spitterStrret", splittedStreet);
+          let houseInfo = splittedStreet.pop(); // poped the last one
+          console.log("houseInfo before after pop", houseInfo);
           let street_name = splittedStreet.join(" ");
+          console.log("street_name", street_name);
+          //remove the '-'
           let splittedHouseInfo = houseInfo.split(/-(.*)/s);
+          console.log(
+            "Splitted house ( houseInfo.split(/-(.*)/s)  )",
+            splittedHouseInfo
+          );
 
           let [house_number, numberAddition] = ["", ""];
           if (splittedHouseInfo.length > 1) {
@@ -166,7 +163,7 @@ export default createStore({
           } else {
             house_number = splittedHouseInfo[0];
           }
-
+          //remove the white space trim()
           street_name = street_name.trim();
           house_number = house_number.trim();
           numberAddition = numberAddition.trim();
@@ -178,7 +175,6 @@ export default createStore({
         }
       });
     },
-
     setHouse({ commit }, houseId) {
       commit("setHouse", houseId);
     },
